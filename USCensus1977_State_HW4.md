@@ -2,7 +2,7 @@
 bdanalytics  
 
 **  **    
-**Date: (Sat) Apr 25, 2015**    
+**Date: (Sun) Apr 26, 2015**    
 
 # Introduction:  
 
@@ -126,7 +126,7 @@ glb_rsp_var_out <- paste0(glb_rsp_var, ".predict.") # model_id is appended later
 glb_id_vars <- c("state.abb")
 
 # List transformed vars  
-glb_exclude_vars_as_features <- c("state.abb") # or c("<var_name>")    
+glb_exclude_vars_as_features <- c("state.abb", "state.division", "state.region", "state.area")
 # List feats that shd be excluded due to known causation by prediction variable
 if (glb_rsp_var_raw != glb_rsp_var)
     glb_exclude_vars_as_features <- union(glb_exclude_vars_as_features, 
@@ -196,6 +196,8 @@ if (glb_is_classification) {
 
 glb_sel_mdl_id <- NULL # or "<model_id_prefix>.<model_method>"
 glb_fin_mdl_id <- glb_sel_mdl_id # or "Final"
+
+glb_out_pfx <- "USCensus1977_State_HW4_"
 
 # Depict process
 glb_analytics_pn <- petrinet(name="glb_analytics_pn",
@@ -565,13 +567,13 @@ if (!is.null(glb_max_obs)) {
             sample.split(org_entity_df[, glb_rsp_var_raw], SplitRatio=glb_max_obs), ]
         org_entity_df <- NULL
     }
-    if (nrow(glb_newent_df) > glb_max_obs) {
-        warning("glb_newent_df restricted to glb_max_obs: ", format(glb_max_obs, big.mark=","))        
-        org_newent_df <- glb_newent_df
-        glb_newent_df <- org_newent_df[split <- 
-            sample.split(org_newent_df[, glb_rsp_var_raw], SplitRatio=glb_max_obs), ]
-        org_newent_df <- NULL
-    }    
+#     if (nrow(glb_newent_df) > glb_max_obs) {
+#         warning("glb_newent_df restricted to glb_max_obs: ", format(glb_max_obs, big.mark=","))        
+#         org_newent_df <- glb_newent_df
+#         glb_newent_df <- org_newent_df[split <- 
+#             sample.split(org_newent_df[, glb_rsp_var_raw], SplitRatio=glb_max_obs), ]
+#         org_newent_df <- NULL
+#     }    
 }
 
 if (nrow(glb_trnent_df) == nrow(glb_entity_df))
@@ -603,7 +605,7 @@ print(tail(glb_script_df, 2))
 ```
 ##           chunk_label chunk_step_major chunk_step_minor elapsed
 ## elapsed   import_data                1                0   0.002
-## elapsed1 cleanse_data                2                0   0.368
+## elapsed1 cleanse_data                2                0   0.413
 ```
 
 ## Step `2`: cleanse data
@@ -619,8 +621,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##                    chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed1          cleanse_data                2                0   0.368
-## elapsed2 inspectORexplore.data                2                1   0.405
+## elapsed1          cleanse_data                2                0   0.413
+## elapsed2 inspectORexplore.data                2                1   0.449
 ```
 
 ### Step `2`.`1`: inspect/explore data
@@ -650,13 +652,7 @@ if (length(str_vars <- setdiff(str_vars[str_vars != ""],
                         as.factor(unique(glb_entity_df[, var])))
     }
 }
-```
 
-```
-## Warning: Creating factors of string variables:state.division, state.region
-```
-
-```r
 #   Convert factors to dummy variables
 #   Build splines   require(splines); bsBasis <- bs(training$age, df=3)
 
@@ -716,7 +712,6 @@ glb_entity_df <- add_new_diag_feats(glb_entity_df)
 ##  Mean   : 4246   Mean   :4436   Mean   :1.170   Mean   :70.88  
 ##  3rd Qu.: 4968   3rd Qu.:4814   3rd Qu.:1.575   3rd Qu.:71.89  
 ##  Max.   :21198   Max.   :6315   Max.   :2.800   Max.   :73.60  
-##                                                                
 ##      Murder          HS.Grad          Frost             Area       
 ##  Min.   : 1.400   Min.   :37.80   Min.   :  0.00   Min.   :  1049  
 ##  1st Qu.: 4.350   1st Qu.:48.05   1st Qu.: 66.25   1st Qu.: 36985  
@@ -724,7 +719,6 @@ glb_entity_df <- add_new_diag_feats(glb_entity_df)
 ##  Mean   : 7.378   Mean   :53.11   Mean   :104.46   Mean   : 70736  
 ##  3rd Qu.:10.675   3rd Qu.:59.15   3rd Qu.:139.75   3rd Qu.: 81162  
 ##  Max.   :15.100   Max.   :67.30   Max.   :188.00   Max.   :566432  
-##                                                                    
 ##   state.abb           state.area           x                 y        
 ##  Length:50          Min.   :  1214   Min.   :-127.25   Min.   :27.87  
 ##  Class :character   1st Qu.: 37317   1st Qu.:-104.16   1st Qu.:35.55  
@@ -732,7 +726,6 @@ glb_entity_df <- add_new_diag_feats(glb_entity_df)
 ##                     Mean   : 72368   Mean   : -92.46   Mean   :39.41  
 ##                     3rd Qu.: 83234   3rd Qu.: -78.98   3rd Qu.:43.14  
 ##                     Max.   :589757   Max.   : -68.98   Max.   :49.25  
-##                                                                       
 ##  state.division      state.name        state.region      
 ##  Length:50          Length:50          Length:50         
 ##  Class :character   Class :character   Class :character  
@@ -740,27 +733,21 @@ glb_entity_df <- add_new_diag_feats(glb_entity_df)
 ##                                                          
 ##                                                          
 ##                                                          
-##                                                          
-##          state.division.fctr     state.region.fctr     .rnorm       
-##  Mountain          : 8       South        :16      Min.   :-2.3804  
-##  South Atlantic    : 8       West         :13      1st Qu.:-0.6183  
-##  West North Central: 7       Northeast    : 9      Median : 0.3611  
-##  New England       : 6       North Central:12      Mean   : 0.2029  
-##  Pacific           : 5                             3rd Qu.: 0.8468  
-##  East North Central: 5                             Max.   : 2.1968  
-##  (Other)           :11                                              
-##          Population              Income          Illiteracy 
-##                   0                   0                   0 
-##            Life.Exp              Murder             HS.Grad 
-##                   0                   0                   0 
-##               Frost                Area           state.abb 
-##                   0                   0                   0 
-##          state.area                   x                   y 
-##                   0                   0                   0 
-##      state.division          state.name        state.region 
-##                   0                   0                   0 
-## state.division.fctr   state.region.fctr              .rnorm 
-##                   0                   0                   0
+##      .rnorm       
+##  Min.   :-2.3804  
+##  1st Qu.:-0.6183  
+##  Median : 0.3611  
+##  Mean   : 0.2029  
+##  3rd Qu.: 0.8468  
+##  Max.   : 2.1968  
+##     Population         Income     Illiteracy       Life.Exp         Murder 
+##              0              0              0              0              0 
+##        HS.Grad          Frost           Area      state.abb     state.area 
+##              0              0              0              0              0 
+##              x              y state.division     state.name   state.region 
+##              0              0              0              0              0 
+##         .rnorm 
+##              0
 ```
 
 ```r
@@ -775,7 +762,6 @@ glb_trnent_df <- add_new_diag_feats(glb_trnent_df)
 ##  Mean   : 4246   Mean   :4436   Mean   :1.170   Mean   :70.88  
 ##  3rd Qu.: 4968   3rd Qu.:4814   3rd Qu.:1.575   3rd Qu.:71.89  
 ##  Max.   :21198   Max.   :6315   Max.   :2.800   Max.   :73.60  
-##                                                                
 ##      Murder          HS.Grad          Frost             Area       
 ##  Min.   : 1.400   Min.   :37.80   Min.   :  0.00   Min.   :  1049  
 ##  1st Qu.: 4.350   1st Qu.:48.05   1st Qu.: 66.25   1st Qu.: 36985  
@@ -783,7 +769,6 @@ glb_trnent_df <- add_new_diag_feats(glb_trnent_df)
 ##  Mean   : 7.378   Mean   :53.11   Mean   :104.46   Mean   : 70736  
 ##  3rd Qu.:10.675   3rd Qu.:59.15   3rd Qu.:139.75   3rd Qu.: 81162  
 ##  Max.   :15.100   Max.   :67.30   Max.   :188.00   Max.   :566432  
-##                                                                    
 ##   state.abb           state.area           x                 y        
 ##  Length:50          Min.   :  1214   Min.   :-127.25   Min.   :27.87  
 ##  Class :character   1st Qu.: 37317   1st Qu.:-104.16   1st Qu.:35.55  
@@ -791,7 +776,6 @@ glb_trnent_df <- add_new_diag_feats(glb_trnent_df)
 ##                     Mean   : 72368   Mean   : -92.46   Mean   :39.41  
 ##                     3rd Qu.: 83234   3rd Qu.: -78.98   3rd Qu.:43.14  
 ##                     Max.   :589757   Max.   : -68.98   Max.   :49.25  
-##                                                                       
 ##  state.division      state.name        state.region      
 ##  Length:50          Length:50          Length:50         
 ##  Class :character   Class :character   Class :character  
@@ -799,27 +783,21 @@ glb_trnent_df <- add_new_diag_feats(glb_trnent_df)
 ##                                                          
 ##                                                          
 ##                                                          
-##                                                          
-##          state.division.fctr     state.region.fctr     .rnorm       
-##  Mountain          : 8       South        :16      Min.   :-1.8324  
-##  South Atlantic    : 8       West         :13      1st Qu.:-0.6709  
-##  West North Central: 7       Northeast    : 9      Median : 0.2725  
-##  New England       : 6       North Central:12      Mean   : 0.2067  
-##  Pacific           : 5                             3rd Qu.: 0.9290  
-##  East North Central: 5                             Max.   : 2.4771  
-##  (Other)           :11                                              
-##          Population              Income          Illiteracy 
-##                   0                   0                   0 
-##            Life.Exp              Murder             HS.Grad 
-##                   0                   0                   0 
-##               Frost                Area           state.abb 
-##                   0                   0                   0 
-##          state.area                   x                   y 
-##                   0                   0                   0 
-##      state.division          state.name        state.region 
-##                   0                   0                   0 
-## state.division.fctr   state.region.fctr              .rnorm 
-##                   0                   0                   0
+##      .rnorm       
+##  Min.   :-1.8324  
+##  1st Qu.:-0.6709  
+##  Median : 0.2725  
+##  Mean   : 0.2067  
+##  3rd Qu.: 0.9290  
+##  Max.   : 2.4771  
+##     Population         Income     Illiteracy       Life.Exp         Murder 
+##              0              0              0              0              0 
+##        HS.Grad          Frost           Area      state.abb     state.area 
+##              0              0              0              0              0 
+##              x              y state.division     state.name   state.region 
+##              0              0              0              0              0 
+##         .rnorm 
+##              0
 ```
 
 ```r
@@ -834,7 +812,6 @@ glb_newent_df <- add_new_diag_feats(glb_newent_df)
 ##  Mean   : 4246   Mean   :4436   Mean   :1.170   Mean   :70.88  
 ##  3rd Qu.: 4968   3rd Qu.:4814   3rd Qu.:1.575   3rd Qu.:71.89  
 ##  Max.   :21198   Max.   :6315   Max.   :2.800   Max.   :73.60  
-##                                                                
 ##      Murder          HS.Grad          Frost             Area       
 ##  Min.   : 1.400   Min.   :37.80   Min.   :  0.00   Min.   :  1049  
 ##  1st Qu.: 4.350   1st Qu.:48.05   1st Qu.: 66.25   1st Qu.: 36985  
@@ -842,7 +819,6 @@ glb_newent_df <- add_new_diag_feats(glb_newent_df)
 ##  Mean   : 7.378   Mean   :53.11   Mean   :104.46   Mean   : 70736  
 ##  3rd Qu.:10.675   3rd Qu.:59.15   3rd Qu.:139.75   3rd Qu.: 81162  
 ##  Max.   :15.100   Max.   :67.30   Max.   :188.00   Max.   :566432  
-##                                                                    
 ##   state.abb           state.area           x                 y        
 ##  Length:50          Min.   :  1214   Min.   :-127.25   Min.   :27.87  
 ##  Class :character   1st Qu.: 37317   1st Qu.:-104.16   1st Qu.:35.55  
@@ -850,7 +826,6 @@ glb_newent_df <- add_new_diag_feats(glb_newent_df)
 ##                     Mean   : 72368   Mean   : -92.46   Mean   :39.41  
 ##                     3rd Qu.: 83234   3rd Qu.: -78.98   3rd Qu.:43.14  
 ##                     Max.   :589757   Max.   : -68.98   Max.   :49.25  
-##                                                                       
 ##  state.division      state.name        state.region      
 ##  Length:50          Length:50          Length:50         
 ##  Class :character   Class :character   Class :character  
@@ -858,27 +833,21 @@ glb_newent_df <- add_new_diag_feats(glb_newent_df)
 ##                                                          
 ##                                                          
 ##                                                          
-##                                                          
-##          state.division.fctr     state.region.fctr     .rnorm        
-##  Mountain          : 8       South        :16      Min.   :-2.12355  
-##  South Atlantic    : 8       West         :13      1st Qu.:-0.76752  
-##  West North Central: 7       Northeast    : 9      Median :-0.01815  
-##  New England       : 6       North Central:12      Mean   : 0.03124  
-##  Pacific           : 5                             3rd Qu.: 0.80447  
-##  East North Central: 5                             Max.   : 2.65579  
-##  (Other)           :11                                               
-##          Population              Income          Illiteracy 
-##                   0                   0                   0 
-##            Life.Exp              Murder             HS.Grad 
-##                   0                   0                   0 
-##               Frost                Area           state.abb 
-##                   0                   0                   0 
-##          state.area                   x                   y 
-##                   0                   0                   0 
-##      state.division          state.name        state.region 
-##                   0                   0                   0 
-## state.division.fctr   state.region.fctr              .rnorm 
-##                   0                   0                   0
+##      .rnorm        
+##  Min.   :-2.12355  
+##  1st Qu.:-0.76752  
+##  Median :-0.01815  
+##  Mean   : 0.03124  
+##  3rd Qu.: 0.80447  
+##  Max.   : 2.65579  
+##     Population         Income     Illiteracy       Life.Exp         Murder 
+##              0              0              0              0              0 
+##        HS.Grad          Frost           Area      state.abb     state.area 
+##              0              0              0              0              0 
+##              x              y state.division     state.name   state.region 
+##              0              0              0              0              0 
+##         .rnorm 
+##              0
 ```
 
 ```r
@@ -956,6 +925,12 @@ if (length(glb_id_vars) > 0) {
 #     geom_vline(xintercept=as.numeric(as.Date("1983-01-01")))        
 #         )
 # print(myplot_scatter(glb_trnent_df, "<col1_name>", "<col2_name>", smooth=TRUE))
+print(myplot_scatter(glb_entity_df, "x", "y"))
+```
+
+![](USCensus1977_State_HW4_files/figure-html/inspectORexplore_data-2.png) 
+
+```r
 # print(myplot_scatter(glb_entity_df, "<col1_name>", "<col2_name>", colorcol_name="<Pred.fctr>") + 
 #         geom_point(data=subset(glb_entity_df, <condition>), 
 #                     mapping=aes(x=<x_var>, y=<y_var>), color="red", shape=4, size=5))
@@ -970,8 +945,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##                    chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed2 inspectORexplore.data                2                1   0.405
-## elapsed3   manage_missing_data                2                2   1.479
+## elapsed2 inspectORexplore.data                2                1   0.449
+## elapsed3   manage_missing_data                2                2   1.741
 ```
 
 ### Step `2`.`2`: manage missing data
@@ -1043,8 +1018,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##                  chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed3 manage_missing_data                2                2   1.479
-## elapsed4  encode_retype_data                2                3   1.847
+## elapsed3 manage_missing_data                2                2   1.741
+## elapsed4  encode_retype_data                2                3   2.164
 ```
 
 ### Step `2`.`3`: encode/retype data
@@ -1094,8 +1069,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##                 chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed4 encode_retype_data                2                3   1.847
-## elapsed5   extract_features                3                0   1.901
+## elapsed4 encode_retype_data                2                3   2.164
+## elapsed5   extract_features                3                0   2.226
 ```
 
 ## Step `3`: extract features
@@ -1154,8 +1129,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##               chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed5 extract_features                3                0   1.901
-## elapsed6  select_features                4                0   2.759
+## elapsed5 extract_features                3                0   2.226
+## elapsed6  select_features                4                0   3.062
 ```
 
 ## Step `4`: select features
@@ -1167,34 +1142,18 @@ print(glb_feats_df <- myselect_features(entity_df=glb_trnent_df,
 ```
 
 ```
-##                                      id       cor.y exclude.as.feat
-## Murder                           Murder -0.78084575               0
-## Illiteracy                   Illiteracy -0.58847793               0
-## HS.Grad                         HS.Grad  0.58221620               0
-## state.region.fctr     state.region.fctr  0.56519612               0
-## y                                     y  0.40665458               0
-## Income                           Income  0.34025534               0
-## Frost                             Frost  0.26206801               0
-## x                                     x -0.24798347               0
-## state.division.fctr state.division.fctr  0.19443418               0
-## state.area                   state.area -0.10963169               0
-## Area                               Area -0.10733194               0
-## Population                   Population -0.06805195               0
-## .rnorm                           .rnorm -0.04828783               0
-##                      cor.y.abs
-## Murder              0.78084575
-## Illiteracy          0.58847793
-## HS.Grad             0.58221620
-## state.region.fctr   0.56519612
-## y                   0.40665458
-## Income              0.34025534
-## Frost               0.26206801
-## x                   0.24798347
-## state.division.fctr 0.19443418
-## state.area          0.10963169
-## Area                0.10733194
-## Population          0.06805195
-## .rnorm              0.04828783
+##                    id       cor.y exclude.as.feat  cor.y.abs
+## Murder         Murder -0.78084575               0 0.78084575
+## Illiteracy Illiteracy -0.58847793               0 0.58847793
+## HS.Grad       HS.Grad  0.58221620               0 0.58221620
+## y                   y  0.40665458               0 0.40665458
+## Income         Income  0.34025534               0 0.34025534
+## Frost           Frost  0.26206801               0 0.26206801
+## x                   x -0.24798347               0 0.24798347
+## state.area state.area -0.10963169               1 0.10963169
+## Area             Area -0.10733194               0 0.10733194
+## Population Population -0.06805195               0 0.06805195
+## .rnorm         .rnorm -0.04828783               0 0.04828783
 ```
 
 ```r
@@ -1211,8 +1170,8 @@ print(tail(glb_script_df, 2))
 ## elapsed6            select_features                4                0
 ## elapsed7 remove_correlated_features                4                1
 ##          elapsed
-## elapsed6   2.759
-## elapsed7   2.946
+## elapsed6   3.062
+## elapsed7   3.272
 ```
 
 ### Step `4`.`1`: remove correlated features
@@ -1228,241 +1187,54 @@ print(glb_feats_df <- orderBy(~-cor.y,
 ```
 
 ```
-##                           Murder  Illiteracy     HS.Grad state.region.fctr
-## Murder               1.000000000  0.70297520 -0.48797102       -0.59295904
-## Illiteracy           0.702975199  1.00000000 -0.65718861       -0.62575044
-## HS.Grad             -0.487971022 -0.65718861  1.00000000        0.39211243
-## state.region.fctr   -0.592959041 -0.62575044  0.39211243        1.00000000
-## y                   -0.653627584 -0.73282587  0.50898691        0.59941585
-## Income              -0.230077610 -0.43707519  0.61993232        0.34590348
-## Frost               -0.538883437 -0.67194697  0.36677970        0.57560581
-## x                   -0.009053187  0.09527077 -0.55617620        0.06285289
-## state.division.fctr -0.332050043 -0.33794946 -0.07787476        0.62242930
-## state.area           0.228794116  0.07986197  0.32988034       -0.08475413
-## Area                 0.228390211  0.07726113  0.33354187       -0.08357567
-## Population           0.343642751  0.10762237 -0.09848975        0.09838614
-## .rnorm               0.128017677 -0.03048443  0.09964994        0.08496140
-##                               y      Income      Frost            x
-## Murder              -0.65362758 -0.23007761 -0.5388834 -0.009053187
-## Illiteracy          -0.73282587 -0.43707519 -0.6719470  0.095270772
-## HS.Grad              0.50898691  0.61993232  0.3667797 -0.556176202
-## state.region.fctr    0.59941585  0.34590348  0.5756058  0.062852890
-## y                    1.00000000  0.42654579  0.7128420 -0.079005795
-## Income               0.42654579  1.00000000  0.2262822 -0.237573717
-## Frost                0.71284199  0.22628218  1.0000000  0.119781966
-## x                   -0.07900579 -0.23757372  0.1197820  1.000000000
-## state.division.fctr  0.23697142  0.21457753  0.3604057  0.488809144
-## state.area           0.18566965  0.36561813  0.0585676 -0.575345670
-## Area                 0.18406742  0.36331544  0.0592291 -0.582648406
-## Population          -0.17187501  0.20822756 -0.3321525  0.154625784
-## .rnorm               0.06966797  0.09280812  0.1460988 -0.151795425
-##                     state.division.fctr  state.area        Area
-## Murder                      -0.33205004  0.22879412  0.22839021
-## Illiteracy                  -0.33794946  0.07986197  0.07726113
-## HS.Grad                     -0.07787476  0.32988034  0.33354187
-## state.region.fctr            0.62242930 -0.08475413 -0.08357567
-## y                            0.23697142  0.18566965  0.18406742
-## Income                       0.21457753  0.36561813  0.36331544
-## Frost                        0.36040574  0.05856760  0.05922910
-## x                            0.48880914 -0.57534567 -0.58264841
-## state.division.fctr          1.00000000 -0.28008380 -0.28335525
-## state.area                  -0.28008380  1.00000000  0.99982464
-## Area                        -0.28335525  0.99982464  1.00000000
-## Population                   0.25629695  0.02156692  0.02254384
-## .rnorm                      -0.07464503  0.24405698  0.24523598
-##                      Population      .rnorm
-## Murder               0.34364275  0.12801768
-## Illiteracy           0.10762237 -0.03048443
-## HS.Grad             -0.09848975  0.09964994
-## state.region.fctr    0.09838614  0.08496140
-## y                   -0.17187501  0.06966797
-## Income               0.20822756  0.09280812
-## Frost               -0.33215245  0.14609882
-## x                    0.15462578 -0.15179543
-## state.division.fctr  0.25629695 -0.07464503
-## state.area           0.02156692  0.24405698
-## Area                 0.02254384  0.24523598
-## Population           1.00000000  0.02931449
-## .rnorm               0.02931449  1.00000000
-##                          Murder Illiteracy    HS.Grad state.region.fctr
-## Murder              0.000000000 0.70297520 0.48797102        0.59295904
-## Illiteracy          0.702975199 0.00000000 0.65718861        0.62575044
-## HS.Grad             0.487971022 0.65718861 0.00000000        0.39211243
-## state.region.fctr   0.592959041 0.62575044 0.39211243        0.00000000
-## y                   0.653627584 0.73282587 0.50898691        0.59941585
-## Income              0.230077610 0.43707519 0.61993232        0.34590348
-## Frost               0.538883437 0.67194697 0.36677970        0.57560581
-## x                   0.009053187 0.09527077 0.55617620        0.06285289
-## state.division.fctr 0.332050043 0.33794946 0.07787476        0.62242930
-## state.area          0.228794116 0.07986197 0.32988034        0.08475413
-## Area                0.228390211 0.07726113 0.33354187        0.08357567
-## Population          0.343642751 0.10762237 0.09848975        0.09838614
-## .rnorm              0.128017677 0.03048443 0.09964994        0.08496140
-##                              y     Income     Frost           x
-## Murder              0.65362758 0.23007761 0.5388834 0.009053187
-## Illiteracy          0.73282587 0.43707519 0.6719470 0.095270772
-## HS.Grad             0.50898691 0.61993232 0.3667797 0.556176202
-## state.region.fctr   0.59941585 0.34590348 0.5756058 0.062852890
-## y                   0.00000000 0.42654579 0.7128420 0.079005795
-## Income              0.42654579 0.00000000 0.2262822 0.237573717
-## Frost               0.71284199 0.22628218 0.0000000 0.119781966
-## x                   0.07900579 0.23757372 0.1197820 0.000000000
-## state.division.fctr 0.23697142 0.21457753 0.3604057 0.488809144
-## state.area          0.18566965 0.36561813 0.0585676 0.575345670
-## Area                0.18406742 0.36331544 0.0592291 0.582648406
-## Population          0.17187501 0.20822756 0.3321525 0.154625784
-## .rnorm              0.06966797 0.09280812 0.1460988 0.151795425
-##                     state.division.fctr state.area       Area Population
-## Murder                       0.33205004 0.22879412 0.22839021 0.34364275
-## Illiteracy                   0.33794946 0.07986197 0.07726113 0.10762237
-## HS.Grad                      0.07787476 0.32988034 0.33354187 0.09848975
-## state.region.fctr            0.62242930 0.08475413 0.08357567 0.09838614
-## y                            0.23697142 0.18566965 0.18406742 0.17187501
-## Income                       0.21457753 0.36561813 0.36331544 0.20822756
-## Frost                        0.36040574 0.05856760 0.05922910 0.33215245
-## x                            0.48880914 0.57534567 0.58264841 0.15462578
-## state.division.fctr          0.00000000 0.28008380 0.28335525 0.25629695
-## state.area                   0.28008380 0.00000000 0.99982464 0.02156692
-## Area                         0.28335525 0.99982464 0.00000000 0.02254384
-## Population                   0.25629695 0.02156692 0.02254384 0.00000000
-## .rnorm                       0.07464503 0.24405698 0.24523598 0.02931449
-##                         .rnorm
-## Murder              0.12801768
-## Illiteracy          0.03048443
-## HS.Grad             0.09964994
-## state.region.fctr   0.08496140
-## y                   0.06966797
-## Income              0.09280812
-## Frost               0.14609882
-## x                   0.15179543
-## state.division.fctr 0.07464503
-## state.area          0.24405698
-## Area                0.24523598
-## Population          0.02931449
-## .rnorm              0.00000000
-## [1] "cor(state.area, Area)=0.9998"
-```
-
-![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-1.png) 
-
-```
-## [1] "cor(Life.Exp, state.area)=-0.1096"
-## [1] "cor(Life.Exp, Area)=-0.1073"
-```
-
-```
-## geom_smooth: method="auto" and size of largest group is <1000, so using loess. Use 'method = x' to change the smoothing method.
-## geom_smooth: method="auto" and size of largest group is <1000, so using loess. Use 'method = x' to change the smoothing method.
-```
-
-```
-## Warning in myfind_cor_features(feats_df = glb_feats_df, entity_df =
-## glb_trnent_df, : Identified Area as highly correlated with other features
-```
-
-![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-2.png) 
-
-```
-## [1] "checking correlations for features:"
-##  [1] "Murder"              "Illiteracy"          "HS.Grad"            
-##  [4] "state.region.fctr"   "y"                   "Income"             
-##  [7] "Frost"               "x"                   "state.division.fctr"
-## [10] "state.area"          "Population"          ".rnorm"             
-##                           Murder  Illiteracy     HS.Grad state.region.fctr
-## Murder               1.000000000  0.70297520 -0.48797102       -0.59295904
-## Illiteracy           0.702975199  1.00000000 -0.65718861       -0.62575044
-## HS.Grad             -0.487971022 -0.65718861  1.00000000        0.39211243
-## state.region.fctr   -0.592959041 -0.62575044  0.39211243        1.00000000
-## y                   -0.653627584 -0.73282587  0.50898691        0.59941585
-## Income              -0.230077610 -0.43707519  0.61993232        0.34590348
-## Frost               -0.538883437 -0.67194697  0.36677970        0.57560581
-## x                   -0.009053187  0.09527077 -0.55617620        0.06285289
-## state.division.fctr -0.332050043 -0.33794946 -0.07787476        0.62242930
-## state.area           0.228794116  0.07986197  0.32988034       -0.08475413
-## Population           0.343642751  0.10762237 -0.09848975        0.09838614
-## .rnorm               0.128017677 -0.03048443  0.09964994        0.08496140
-##                               y      Income      Frost            x
-## Murder              -0.65362758 -0.23007761 -0.5388834 -0.009053187
-## Illiteracy          -0.73282587 -0.43707519 -0.6719470  0.095270772
-## HS.Grad              0.50898691  0.61993232  0.3667797 -0.556176202
-## state.region.fctr    0.59941585  0.34590348  0.5756058  0.062852890
-## y                    1.00000000  0.42654579  0.7128420 -0.079005795
-## Income               0.42654579  1.00000000  0.2262822 -0.237573717
-## Frost                0.71284199  0.22628218  1.0000000  0.119781966
-## x                   -0.07900579 -0.23757372  0.1197820  1.000000000
-## state.division.fctr  0.23697142  0.21457753  0.3604057  0.488809144
-## state.area           0.18566965  0.36561813  0.0585676 -0.575345670
-## Population          -0.17187501  0.20822756 -0.3321525  0.154625784
-## .rnorm               0.06966797  0.09280812  0.1460988 -0.151795425
-##                     state.division.fctr  state.area  Population
-## Murder                      -0.33205004  0.22879412  0.34364275
-## Illiteracy                  -0.33794946  0.07986197  0.10762237
-## HS.Grad                     -0.07787476  0.32988034 -0.09848975
-## state.region.fctr            0.62242930 -0.08475413  0.09838614
-## y                            0.23697142  0.18566965 -0.17187501
-## Income                       0.21457753  0.36561813  0.20822756
-## Frost                        0.36040574  0.05856760 -0.33215245
-## x                            0.48880914 -0.57534567  0.15462578
-## state.division.fctr          1.00000000 -0.28008380  0.25629695
-## state.area                  -0.28008380  1.00000000  0.02156692
-## Population                   0.25629695  0.02156692  1.00000000
-## .rnorm                      -0.07464503  0.24405698  0.02931449
-##                          .rnorm
-## Murder               0.12801768
-## Illiteracy          -0.03048443
-## HS.Grad              0.09964994
-## state.region.fctr    0.08496140
-## y                    0.06966797
-## Income               0.09280812
-## Frost                0.14609882
-## x                   -0.15179543
-## state.division.fctr -0.07464503
-## state.area           0.24405698
-## Population           0.02931449
-## .rnorm               1.00000000
-##                          Murder Illiteracy    HS.Grad state.region.fctr
-## Murder              0.000000000 0.70297520 0.48797102        0.59295904
-## Illiteracy          0.702975199 0.00000000 0.65718861        0.62575044
-## HS.Grad             0.487971022 0.65718861 0.00000000        0.39211243
-## state.region.fctr   0.592959041 0.62575044 0.39211243        0.00000000
-## y                   0.653627584 0.73282587 0.50898691        0.59941585
-## Income              0.230077610 0.43707519 0.61993232        0.34590348
-## Frost               0.538883437 0.67194697 0.36677970        0.57560581
-## x                   0.009053187 0.09527077 0.55617620        0.06285289
-## state.division.fctr 0.332050043 0.33794946 0.07787476        0.62242930
-## state.area          0.228794116 0.07986197 0.32988034        0.08475413
-## Population          0.343642751 0.10762237 0.09848975        0.09838614
-## .rnorm              0.128017677 0.03048443 0.09964994        0.08496140
-##                              y     Income     Frost           x
-## Murder              0.65362758 0.23007761 0.5388834 0.009053187
-## Illiteracy          0.73282587 0.43707519 0.6719470 0.095270772
-## HS.Grad             0.50898691 0.61993232 0.3667797 0.556176202
-## state.region.fctr   0.59941585 0.34590348 0.5756058 0.062852890
-## y                   0.00000000 0.42654579 0.7128420 0.079005795
-## Income              0.42654579 0.00000000 0.2262822 0.237573717
-## Frost               0.71284199 0.22628218 0.0000000 0.119781966
-## x                   0.07900579 0.23757372 0.1197820 0.000000000
-## state.division.fctr 0.23697142 0.21457753 0.3604057 0.488809144
-## state.area          0.18566965 0.36561813 0.0585676 0.575345670
-## Population          0.17187501 0.20822756 0.3321525 0.154625784
-## .rnorm              0.06966797 0.09280812 0.1460988 0.151795425
-##                     state.division.fctr state.area Population     .rnorm
-## Murder                       0.33205004 0.22879412 0.34364275 0.12801768
-## Illiteracy                   0.33794946 0.07986197 0.10762237 0.03048443
-## HS.Grad                      0.07787476 0.32988034 0.09848975 0.09964994
-## state.region.fctr            0.62242930 0.08475413 0.09838614 0.08496140
-## y                            0.23697142 0.18566965 0.17187501 0.06966797
-## Income                       0.21457753 0.36561813 0.20822756 0.09280812
-## Frost                        0.36040574 0.05856760 0.33215245 0.14609882
-## x                            0.48880914 0.57534567 0.15462578 0.15179543
-## state.division.fctr          0.00000000 0.28008380 0.25629695 0.07464503
-## state.area                   0.28008380 0.00000000 0.02156692 0.24405698
-## Population                   0.25629695 0.02156692 0.00000000 0.02931449
-## .rnorm                       0.07464503 0.24405698 0.02931449 0.00000000
+##                  Murder  Illiteracy     HS.Grad           y      Income
+## Murder      1.000000000  0.70297520 -0.48797102 -0.65362758 -0.23007761
+## Illiteracy  0.702975199  1.00000000 -0.65718861 -0.73282587 -0.43707519
+## HS.Grad    -0.487971022 -0.65718861  1.00000000  0.50898691  0.61993232
+## y          -0.653627584 -0.73282587  0.50898691  1.00000000  0.42654579
+## Income     -0.230077610 -0.43707519  0.61993232  0.42654579  1.00000000
+## Frost      -0.538883437 -0.67194697  0.36677970  0.71284199  0.22628218
+## x          -0.009053187  0.09527077 -0.55617620 -0.07900579 -0.23757372
+## Area        0.228390211  0.07726113  0.33354187  0.18406742  0.36331544
+## Population  0.343642751  0.10762237 -0.09848975 -0.17187501  0.20822756
+## .rnorm      0.128017677 -0.03048443  0.09964994  0.06966797  0.09280812
+##                 Frost            x        Area  Population      .rnorm
+## Murder     -0.5388834 -0.009053187  0.22839021  0.34364275  0.12801768
+## Illiteracy -0.6719470  0.095270772  0.07726113  0.10762237 -0.03048443
+## HS.Grad     0.3667797 -0.556176202  0.33354187 -0.09848975  0.09964994
+## y           0.7128420 -0.079005795  0.18406742 -0.17187501  0.06966797
+## Income      0.2262822 -0.237573717  0.36331544  0.20822756  0.09280812
+## Frost       1.0000000  0.119781966  0.05922910 -0.33215245  0.14609882
+## x           0.1197820  1.000000000 -0.58264841  0.15462578 -0.15179543
+## Area        0.0592291 -0.582648406  1.00000000  0.02254384  0.24523598
+## Population -0.3321525  0.154625784  0.02254384  1.00000000  0.02931449
+## .rnorm      0.1460988 -0.151795425  0.24523598  0.02931449  1.00000000
+##                 Murder Illiteracy    HS.Grad          y     Income
+## Murder     0.000000000 0.70297520 0.48797102 0.65362758 0.23007761
+## Illiteracy 0.702975199 0.00000000 0.65718861 0.73282587 0.43707519
+## HS.Grad    0.487971022 0.65718861 0.00000000 0.50898691 0.61993232
+## y          0.653627584 0.73282587 0.50898691 0.00000000 0.42654579
+## Income     0.230077610 0.43707519 0.61993232 0.42654579 0.00000000
+## Frost      0.538883437 0.67194697 0.36677970 0.71284199 0.22628218
+## x          0.009053187 0.09527077 0.55617620 0.07900579 0.23757372
+## Area       0.228390211 0.07726113 0.33354187 0.18406742 0.36331544
+## Population 0.343642751 0.10762237 0.09848975 0.17187501 0.20822756
+## .rnorm     0.128017677 0.03048443 0.09964994 0.06966797 0.09280812
+##                Frost           x       Area Population     .rnorm
+## Murder     0.5388834 0.009053187 0.22839021 0.34364275 0.12801768
+## Illiteracy 0.6719470 0.095270772 0.07726113 0.10762237 0.03048443
+## HS.Grad    0.3667797 0.556176202 0.33354187 0.09848975 0.09964994
+## y          0.7128420 0.079005795 0.18406742 0.17187501 0.06966797
+## Income     0.2262822 0.237573717 0.36331544 0.20822756 0.09280812
+## Frost      0.0000000 0.119781966 0.05922910 0.33215245 0.14609882
+## x          0.1197820 0.000000000 0.58264841 0.15462578 0.15179543
+## Area       0.0592291 0.582648406 0.00000000 0.02254384 0.24523598
+## Population 0.3321525 0.154625784 0.02254384 0.00000000 0.02931449
+## .rnorm     0.1460988 0.151795425 0.24523598 0.02931449 0.00000000
 ## [1] "cor(Illiteracy, y)=-0.7328"
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-3.png) 
+![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-1.png) 
 
 ```
 ## [1] "cor(Life.Exp, Illiteracy)=-0.5885"
@@ -1479,102 +1251,56 @@ print(glb_feats_df <- orderBy(~-cor.y,
 ## glb_trnent_df, : Identified y as highly correlated with other features
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-4.png) 
+![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-2.png) 
 
 ```
 ## [1] "checking correlations for features:"
-##  [1] "Murder"              "Illiteracy"          "HS.Grad"            
-##  [4] "state.region.fctr"   "Income"              "Frost"              
-##  [7] "x"                   "state.division.fctr" "state.area"         
-## [10] "Population"          ".rnorm"             
-##                           Murder  Illiteracy     HS.Grad state.region.fctr
-## Murder               1.000000000  0.70297520 -0.48797102       -0.59295904
-## Illiteracy           0.702975199  1.00000000 -0.65718861       -0.62575044
-## HS.Grad             -0.487971022 -0.65718861  1.00000000        0.39211243
-## state.region.fctr   -0.592959041 -0.62575044  0.39211243        1.00000000
-## Income              -0.230077610 -0.43707519  0.61993232        0.34590348
-## Frost               -0.538883437 -0.67194697  0.36677970        0.57560581
-## x                   -0.009053187  0.09527077 -0.55617620        0.06285289
-## state.division.fctr -0.332050043 -0.33794946 -0.07787476        0.62242930
-## state.area           0.228794116  0.07986197  0.32988034       -0.08475413
-## Population           0.343642751  0.10762237 -0.09848975        0.09838614
-## .rnorm               0.128017677 -0.03048443  0.09964994        0.08496140
-##                          Income      Frost            x
-## Murder              -0.23007761 -0.5388834 -0.009053187
-## Illiteracy          -0.43707519 -0.6719470  0.095270772
-## HS.Grad              0.61993232  0.3667797 -0.556176202
-## state.region.fctr    0.34590348  0.5756058  0.062852890
-## Income               1.00000000  0.2262822 -0.237573717
-## Frost                0.22628218  1.0000000  0.119781966
-## x                   -0.23757372  0.1197820  1.000000000
-## state.division.fctr  0.21457753  0.3604057  0.488809144
-## state.area           0.36561813  0.0585676 -0.575345670
-## Population           0.20822756 -0.3321525  0.154625784
-## .rnorm               0.09280812  0.1460988 -0.151795425
-##                     state.division.fctr  state.area  Population
-## Murder                      -0.33205004  0.22879412  0.34364275
-## Illiteracy                  -0.33794946  0.07986197  0.10762237
-## HS.Grad                     -0.07787476  0.32988034 -0.09848975
-## state.region.fctr            0.62242930 -0.08475413  0.09838614
-## Income                       0.21457753  0.36561813  0.20822756
-## Frost                        0.36040574  0.05856760 -0.33215245
-## x                            0.48880914 -0.57534567  0.15462578
-## state.division.fctr          1.00000000 -0.28008380  0.25629695
-## state.area                  -0.28008380  1.00000000  0.02156692
-## Population                   0.25629695  0.02156692  1.00000000
-## .rnorm                      -0.07464503  0.24405698  0.02931449
-##                          .rnorm
-## Murder               0.12801768
-## Illiteracy          -0.03048443
-## HS.Grad              0.09964994
-## state.region.fctr    0.08496140
-## Income               0.09280812
-## Frost                0.14609882
-## x                   -0.15179543
-## state.division.fctr -0.07464503
-## state.area           0.24405698
-## Population           0.02931449
-## .rnorm               1.00000000
-##                          Murder Illiteracy    HS.Grad state.region.fctr
-## Murder              0.000000000 0.70297520 0.48797102        0.59295904
-## Illiteracy          0.702975199 0.00000000 0.65718861        0.62575044
-## HS.Grad             0.487971022 0.65718861 0.00000000        0.39211243
-## state.region.fctr   0.592959041 0.62575044 0.39211243        0.00000000
-## Income              0.230077610 0.43707519 0.61993232        0.34590348
-## Frost               0.538883437 0.67194697 0.36677970        0.57560581
-## x                   0.009053187 0.09527077 0.55617620        0.06285289
-## state.division.fctr 0.332050043 0.33794946 0.07787476        0.62242930
-## state.area          0.228794116 0.07986197 0.32988034        0.08475413
-## Population          0.343642751 0.10762237 0.09848975        0.09838614
-## .rnorm              0.128017677 0.03048443 0.09964994        0.08496140
-##                         Income     Frost           x state.division.fctr
-## Murder              0.23007761 0.5388834 0.009053187          0.33205004
-## Illiteracy          0.43707519 0.6719470 0.095270772          0.33794946
-## HS.Grad             0.61993232 0.3667797 0.556176202          0.07787476
-## state.region.fctr   0.34590348 0.5756058 0.062852890          0.62242930
-## Income              0.00000000 0.2262822 0.237573717          0.21457753
-## Frost               0.22628218 0.0000000 0.119781966          0.36040574
-## x                   0.23757372 0.1197820 0.000000000          0.48880914
-## state.division.fctr 0.21457753 0.3604057 0.488809144          0.00000000
-## state.area          0.36561813 0.0585676 0.575345670          0.28008380
-## Population          0.20822756 0.3321525 0.154625784          0.25629695
-## .rnorm              0.09280812 0.1460988 0.151795425          0.07464503
-##                     state.area Population     .rnorm
-## Murder              0.22879412 0.34364275 0.12801768
-## Illiteracy          0.07986197 0.10762237 0.03048443
-## HS.Grad             0.32988034 0.09848975 0.09964994
-## state.region.fctr   0.08475413 0.09838614 0.08496140
-## Income              0.36561813 0.20822756 0.09280812
-## Frost               0.05856760 0.33215245 0.14609882
-## x                   0.57534567 0.15462578 0.15179543
-## state.division.fctr 0.28008380 0.25629695 0.07464503
-## state.area          0.00000000 0.02156692 0.24405698
-## Population          0.02156692 0.00000000 0.02931449
-## .rnorm              0.24405698 0.02931449 0.00000000
+## [1] "Murder"     "Illiteracy" "HS.Grad"    "Income"     "Frost"     
+## [6] "x"          "Area"       "Population" ".rnorm"    
+##                  Murder  Illiteracy     HS.Grad      Income      Frost
+## Murder      1.000000000  0.70297520 -0.48797102 -0.23007761 -0.5388834
+## Illiteracy  0.702975199  1.00000000 -0.65718861 -0.43707519 -0.6719470
+## HS.Grad    -0.487971022 -0.65718861  1.00000000  0.61993232  0.3667797
+## Income     -0.230077610 -0.43707519  0.61993232  1.00000000  0.2262822
+## Frost      -0.538883437 -0.67194697  0.36677970  0.22628218  1.0000000
+## x          -0.009053187  0.09527077 -0.55617620 -0.23757372  0.1197820
+## Area        0.228390211  0.07726113  0.33354187  0.36331544  0.0592291
+## Population  0.343642751  0.10762237 -0.09848975  0.20822756 -0.3321525
+## .rnorm      0.128017677 -0.03048443  0.09964994  0.09280812  0.1460988
+##                       x        Area  Population      .rnorm
+## Murder     -0.009053187  0.22839021  0.34364275  0.12801768
+## Illiteracy  0.095270772  0.07726113  0.10762237 -0.03048443
+## HS.Grad    -0.556176202  0.33354187 -0.09848975  0.09964994
+## Income     -0.237573717  0.36331544  0.20822756  0.09280812
+## Frost       0.119781966  0.05922910 -0.33215245  0.14609882
+## x           1.000000000 -0.58264841  0.15462578 -0.15179543
+## Area       -0.582648406  1.00000000  0.02254384  0.24523598
+## Population  0.154625784  0.02254384  1.00000000  0.02931449
+## .rnorm     -0.151795425  0.24523598  0.02931449  1.00000000
+##                 Murder Illiteracy    HS.Grad     Income     Frost
+## Murder     0.000000000 0.70297520 0.48797102 0.23007761 0.5388834
+## Illiteracy 0.702975199 0.00000000 0.65718861 0.43707519 0.6719470
+## HS.Grad    0.487971022 0.65718861 0.00000000 0.61993232 0.3667797
+## Income     0.230077610 0.43707519 0.61993232 0.00000000 0.2262822
+## Frost      0.538883437 0.67194697 0.36677970 0.22628218 0.0000000
+## x          0.009053187 0.09527077 0.55617620 0.23757372 0.1197820
+## Area       0.228390211 0.07726113 0.33354187 0.36331544 0.0592291
+## Population 0.343642751 0.10762237 0.09848975 0.20822756 0.3321525
+## .rnorm     0.128017677 0.03048443 0.09964994 0.09280812 0.1460988
+##                      x       Area Population     .rnorm
+## Murder     0.009053187 0.22839021 0.34364275 0.12801768
+## Illiteracy 0.095270772 0.07726113 0.10762237 0.03048443
+## HS.Grad    0.556176202 0.33354187 0.09848975 0.09964994
+## Income     0.237573717 0.36331544 0.20822756 0.09280812
+## Frost      0.119781966 0.05922910 0.33215245 0.14609882
+## x          0.000000000 0.58264841 0.15462578 0.15179543
+## Area       0.582648406 0.00000000 0.02254384 0.24523598
+## Population 0.154625784 0.02254384 0.00000000 0.02931449
+## .rnorm     0.151795425 0.24523598 0.02931449 0.00000000
 ## [1] "cor(Murder, Illiteracy)=0.7030"
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-5.png) 
+![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-3.png) 
 
 ```
 ## [1] "cor(Life.Exp, Murder)=-0.7808"
@@ -1592,108 +1318,60 @@ print(glb_feats_df <- orderBy(~-cor.y,
 ## features
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-6.png) 
+![](USCensus1977_State_HW4_files/figure-html/remove_correlated_features-4.png) 
 
 ```
 ## [1] "checking correlations for features:"
-##  [1] "Murder"              "HS.Grad"             "state.region.fctr"  
-##  [4] "Income"              "Frost"               "x"                  
-##  [7] "state.division.fctr" "state.area"          "Population"         
-## [10] ".rnorm"             
-##                           Murder     HS.Grad state.region.fctr      Income
-## Murder               1.000000000 -0.48797102       -0.59295904 -0.23007761
-## HS.Grad             -0.487971022  1.00000000        0.39211243  0.61993232
-## state.region.fctr   -0.592959041  0.39211243        1.00000000  0.34590348
-## Income              -0.230077610  0.61993232        0.34590348  1.00000000
-## Frost               -0.538883437  0.36677970        0.57560581  0.22628218
-## x                   -0.009053187 -0.55617620        0.06285289 -0.23757372
-## state.division.fctr -0.332050043 -0.07787476        0.62242930  0.21457753
-## state.area           0.228794116  0.32988034       -0.08475413  0.36561813
-## Population           0.343642751 -0.09848975        0.09838614  0.20822756
-## .rnorm               0.128017677  0.09964994        0.08496140  0.09280812
-##                          Frost            x state.division.fctr
-## Murder              -0.5388834 -0.009053187         -0.33205004
-## HS.Grad              0.3667797 -0.556176202         -0.07787476
-## state.region.fctr    0.5756058  0.062852890          0.62242930
-## Income               0.2262822 -0.237573717          0.21457753
-## Frost                1.0000000  0.119781966          0.36040574
-## x                    0.1197820  1.000000000          0.48880914
-## state.division.fctr  0.3604057  0.488809144          1.00000000
-## state.area           0.0585676 -0.575345670         -0.28008380
-## Population          -0.3321525  0.154625784          0.25629695
-## .rnorm               0.1460988 -0.151795425         -0.07464503
-##                      state.area  Population      .rnorm
-## Murder               0.22879412  0.34364275  0.12801768
-## HS.Grad              0.32988034 -0.09848975  0.09964994
-## state.region.fctr   -0.08475413  0.09838614  0.08496140
-## Income               0.36561813  0.20822756  0.09280812
-## Frost                0.05856760 -0.33215245  0.14609882
-## x                   -0.57534567  0.15462578 -0.15179543
-## state.division.fctr -0.28008380  0.25629695 -0.07464503
-## state.area           1.00000000  0.02156692  0.24405698
-## Population           0.02156692  1.00000000  0.02931449
-## .rnorm               0.24405698  0.02931449  1.00000000
-##                          Murder    HS.Grad state.region.fctr     Income
-## Murder              0.000000000 0.48797102        0.59295904 0.23007761
-## HS.Grad             0.487971022 0.00000000        0.39211243 0.61993232
-## state.region.fctr   0.592959041 0.39211243        0.00000000 0.34590348
-## Income              0.230077610 0.61993232        0.34590348 0.00000000
-## Frost               0.538883437 0.36677970        0.57560581 0.22628218
-## x                   0.009053187 0.55617620        0.06285289 0.23757372
-## state.division.fctr 0.332050043 0.07787476        0.62242930 0.21457753
-## state.area          0.228794116 0.32988034        0.08475413 0.36561813
-## Population          0.343642751 0.09848975        0.09838614 0.20822756
-## .rnorm              0.128017677 0.09964994        0.08496140 0.09280812
-##                         Frost           x state.division.fctr state.area
-## Murder              0.5388834 0.009053187          0.33205004 0.22879412
-## HS.Grad             0.3667797 0.556176202          0.07787476 0.32988034
-## state.region.fctr   0.5756058 0.062852890          0.62242930 0.08475413
-## Income              0.2262822 0.237573717          0.21457753 0.36561813
-## Frost               0.0000000 0.119781966          0.36040574 0.05856760
-## x                   0.1197820 0.000000000          0.48880914 0.57534567
-## state.division.fctr 0.3604057 0.488809144          0.00000000 0.28008380
-## state.area          0.0585676 0.575345670          0.28008380 0.00000000
-## Population          0.3321525 0.154625784          0.25629695 0.02156692
-## .rnorm              0.1460988 0.151795425          0.07464503 0.24405698
-##                     Population     .rnorm
-## Murder              0.34364275 0.12801768
-## HS.Grad             0.09848975 0.09964994
-## state.region.fctr   0.09838614 0.08496140
-## Income              0.20822756 0.09280812
-## Frost               0.33215245 0.14609882
-## x                   0.15462578 0.15179543
-## state.division.fctr 0.25629695 0.07464503
-## state.area          0.02156692 0.24405698
-## Population          0.00000000 0.02931449
-## .rnorm              0.02931449 0.00000000
-##                                      id       cor.y exclude.as.feat
-## HS.Grad                         HS.Grad  0.58221620               0
-## state.region.fctr     state.region.fctr  0.56519612               0
-## y                                     y  0.40665458               0
-## Income                           Income  0.34025534               0
-## Frost                             Frost  0.26206801               0
-## state.division.fctr state.division.fctr  0.19443418               0
-## .rnorm                           .rnorm -0.04828783               0
-## Population                   Population -0.06805195               0
-## Area                               Area -0.10733194               0
-## state.area                   state.area -0.10963169               0
-## x                                     x -0.24798347               0
-## Illiteracy                   Illiteracy -0.58847793               0
-## Murder                           Murder -0.78084575               0
-##                      cor.y.abs cor.low
-## HS.Grad             0.58221620       1
-## state.region.fctr   0.56519612       1
-## y                   0.40665458       0
-## Income              0.34025534       1
-## Frost               0.26206801       1
-## state.division.fctr 0.19443418       1
-## .rnorm              0.04828783       1
-## Population          0.06805195       1
-## Area                0.10733194       0
-## state.area          0.10963169       1
-## x                   0.24798347       1
-## Illiteracy          0.58847793       0
-## Murder              0.78084575       1
+## [1] "Murder"     "HS.Grad"    "Income"     "Frost"      "x"         
+## [6] "Area"       "Population" ".rnorm"    
+##                  Murder     HS.Grad      Income      Frost            x
+## Murder      1.000000000 -0.48797102 -0.23007761 -0.5388834 -0.009053187
+## HS.Grad    -0.487971022  1.00000000  0.61993232  0.3667797 -0.556176202
+## Income     -0.230077610  0.61993232  1.00000000  0.2262822 -0.237573717
+## Frost      -0.538883437  0.36677970  0.22628218  1.0000000  0.119781966
+## x          -0.009053187 -0.55617620 -0.23757372  0.1197820  1.000000000
+## Area        0.228390211  0.33354187  0.36331544  0.0592291 -0.582648406
+## Population  0.343642751 -0.09848975  0.20822756 -0.3321525  0.154625784
+## .rnorm      0.128017677  0.09964994  0.09280812  0.1460988 -0.151795425
+##                   Area  Population      .rnorm
+## Murder      0.22839021  0.34364275  0.12801768
+## HS.Grad     0.33354187 -0.09848975  0.09964994
+## Income      0.36331544  0.20822756  0.09280812
+## Frost       0.05922910 -0.33215245  0.14609882
+## x          -0.58264841  0.15462578 -0.15179543
+## Area        1.00000000  0.02254384  0.24523598
+## Population  0.02254384  1.00000000  0.02931449
+## .rnorm      0.24523598  0.02931449  1.00000000
+##                 Murder    HS.Grad     Income     Frost           x
+## Murder     0.000000000 0.48797102 0.23007761 0.5388834 0.009053187
+## HS.Grad    0.487971022 0.00000000 0.61993232 0.3667797 0.556176202
+## Income     0.230077610 0.61993232 0.00000000 0.2262822 0.237573717
+## Frost      0.538883437 0.36677970 0.22628218 0.0000000 0.119781966
+## x          0.009053187 0.55617620 0.23757372 0.1197820 0.000000000
+## Area       0.228390211 0.33354187 0.36331544 0.0592291 0.582648406
+## Population 0.343642751 0.09848975 0.20822756 0.3321525 0.154625784
+## .rnorm     0.128017677 0.09964994 0.09280812 0.1460988 0.151795425
+##                  Area Population     .rnorm
+## Murder     0.22839021 0.34364275 0.12801768
+## HS.Grad    0.33354187 0.09848975 0.09964994
+## Income     0.36331544 0.20822756 0.09280812
+## Frost      0.05922910 0.33215245 0.14609882
+## x          0.58264841 0.15462578 0.15179543
+## Area       0.00000000 0.02254384 0.24523598
+## Population 0.02254384 0.00000000 0.02931449
+## .rnorm     0.24523598 0.02931449 0.00000000
+##                    id       cor.y exclude.as.feat  cor.y.abs cor.low
+## HS.Grad       HS.Grad  0.58221620               0 0.58221620       1
+## y                   y  0.40665458               0 0.40665458       0
+## Income         Income  0.34025534               0 0.34025534       1
+## Frost           Frost  0.26206801               0 0.26206801       1
+## .rnorm         .rnorm -0.04828783               0 0.04828783       1
+## Population Population -0.06805195               0 0.06805195       1
+## Area             Area -0.10733194               0 0.10733194       1
+## state.area state.area -0.10963169               1 0.10963169       0
+## x                   x -0.24798347               0 0.24798347       1
+## Illiteracy Illiteracy -0.58847793               0 0.58847793       0
+## Murder         Murder -0.78084575               0 0.78084575       1
 ```
 
 ```r
@@ -1710,8 +1388,8 @@ print(tail(glb_script_df, 2))
 ## elapsed7 remove_correlated_features                4                1
 ## elapsed8                 fit.models                5                0
 ##          elapsed
-## elapsed7   2.946
-## elapsed8   5.233
+## elapsed7   3.272
+## elapsed8   4.856
 ```
 
 ## Step `5`: fit models
@@ -1809,9 +1487,9 @@ ret_lst <- myfit_mdl(model_id="MFO",
 ## F-statistic: 0.1122 on 1 and 48 DF,  p-value: 0.7391
 ## 
 ##   model_id model_method  feats max.nTuningRuns min.elapsedtime.everything
-## 1   MFO.lm           lm .rnorm               0                      0.617
+## 1   MFO.lm           lm .rnorm               0                      0.627
 ##   min.elapsedtime.final max.R.sq.fit min.RMSE.fit max.R.sq.OOB
-## 1                 0.002  0.002331715     1.327352   -0.0197079
+## 1                 0.003  0.002331715     1.327352   -0.0197079
 ##   min.RMSE.OOB max.Adj.R.sq.fit
 ## 1     1.341933      -0.01845304
 ```
@@ -1877,7 +1555,7 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y.cv.0",
 ##               model_id model_method  feats max.nTuningRuns
 ## 1 Max.cor.Y.cv.0.rpart        rpart Murder               0
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      0.483                 0.007            0
+## 1                      0.471                 0.007            0
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB
 ## 1     1.328902            0     1.328902
 ```
@@ -1962,7 +1640,7 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y.cv.0.cp.0",
 ##                    model_id model_method  feats max.nTuningRuns
 ## 1 Max.cor.Y.cv.0.cp.0.rpart        rpart Murder               0
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      0.429                 0.006    0.6715877
+## 1                      0.418                 0.005    0.6715877
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB
 ## 1    0.7615573    0.6715877    0.7615573
 ```
@@ -1986,16 +1664,18 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y",
 ## + Fold2: cp=0.04379 
 ## - Fold2: cp=0.04379 
 ## + Fold3: cp=0.04379 
-## - Fold3: cp=0.04379 
-## Aggregating results
-## Selecting tuning parameters
-## Fitting cp = 0.0438 on full training set
+## - Fold3: cp=0.04379
 ```
 
 ```
-## Warning in myfit_mdl(model_id = "Max.cor.Y", model_method = "rpart",
-## model_type = glb_model_type, : model's bestTune found at an extreme of
-## tuneGrid for parameter: cp
+## Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info =
+## trainInfo, : There were missing values in resampled performance measures.
+```
+
+```
+## Aggregating results
+## Selecting tuning parameters
+## Fitting cp = 0.149 on full training set
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-7.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-8.png) 
@@ -2007,10 +1687,9 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y",
 ##     surrogatestyle = 0, maxdepth = 30, xval = 0))
 ##   n= 50 
 ## 
-##           CP nsplit rel error
-## 1 0.47910997      0 1.0000000
-## 2 0.14868323      1 0.5208900
-## 3 0.04379453      2 0.3722068
+##          CP nsplit rel error
+## 1 0.4791100      0   1.00000
+## 2 0.1486832      1   0.52089
 ## 
 ## Variable importance
 ## Murder 
@@ -2022,39 +1701,28 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y",
 ##   Primary splits:
 ##       Murder < 6.55 to the right, improve=0.47911, (0 missing)
 ## 
-## Node number 2: 27 observations,    complexity param=0.1486832
+## Node number 2: 27 observations
 ##   mean=70.02963, MSE=0.989848 
-##   left son=4 (8 obs) right son=5 (19 obs)
-##   Primary splits:
-##       Murder < 11.2 to the right, improve=0.4912307, (0 missing)
 ## 
 ## Node number 3: 23 observations
 ##   mean=71.87522, MSE=0.8377467 
-## 
-## Node number 4: 8 observations
-##   mean=68.955, MSE=0.734025 
-## 
-## Node number 5: 19 observations
-##   mean=70.48211, MSE=0.406585 
 ## 
 ## n= 50 
 ## 
 ## node), split, n, deviance, yval
 ##       * denotes terminal node
 ## 
-## 1) root 50 88.299000 70.87860  
-##   2) Murder>=6.55 27 26.725900 70.02963  
-##     4) Murder>=11.2 8  5.872200 68.95500 *
-##     5) Murder< 11.2 19  7.725116 70.48211 *
-##   3) Murder< 6.55 23 19.268170 71.87522 *
+## 1) root 50 88.29900 70.87860  
+##   2) Murder>=6.55 27 26.72590 70.02963 *
+##   3) Murder< 6.55 23 19.26817 71.87522 *
 ##          model_id model_method  feats max.nTuningRuns
 ## 1 Max.cor.Y.rpart        rpart Murder               3
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      0.819                 0.006    0.6277932
+## 1                        0.8                 0.007      0.47911
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit min.RMSESD.fit
-## 1     1.048316    0.6277932    0.8107464        0.4087926     0.08998812
+## 1     1.039829      0.47911    0.9591045        0.4395211      0.2490712
 ##   max.RsquaredSD.fit
-## 1          0.1741142
+## 1          0.2652752
 ```
 
 ```r
@@ -2107,11 +1775,11 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y",
 ##       model_id model_method  feats max.nTuningRuns
 ## 1 Max.cor.Y.lm           lm Murder               1
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      0.721                 0.002    0.6097201
+## 1                      0.706                 0.002    0.6097201
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit max.Rsquared.fit
-## 1    0.8553751    0.6097201    0.8301967        0.6015893        0.6279054
+## 1    0.8320957    0.6097201    0.8301967        0.6015893        0.6384208
 ##   min.RMSESD.fit max.RsquaredSD.fit
-## 1      0.1665302          0.1027377
+## 1      0.3047336           0.264922
 ```
 
 ```r
@@ -2142,7 +1810,7 @@ if (nrow(int_feats_df <- subset(glb_feats_df, (cor.low == 0) &
 
 ```
 ## [1] "fitting model: Interact.High.cor.y.lm"
-## [1] "    indep_vars: Murder, Murder:y, Murder:Area, Murder:Illiteracy"
+## [1] "    indep_vars: Murder, Murder:y, Murder:Illiteracy"
 ## + Fold1: parameter=none 
 ## - Fold1: parameter=none 
 ## + Fold2: parameter=none 
@@ -2162,32 +1830,29 @@ if (nrow(int_feats_df <- subset(glb_feats_df, (cor.low == 0) &
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.71746 -0.44965  0.04437  0.42027  2.32769 
+## -1.73323 -0.53687  0.07993  0.41840  2.33219 
 ## 
 ## Coefficients:
-##                       Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)          7.303e+01  3.106e-01 235.147   <2e-16 ***
-## Murder               1.991e-01  1.983e-01   1.004   0.3207    
-## `Murder:y`          -1.093e-02  4.625e-03  -2.364   0.0224 *  
-## `Murder:Area`        2.801e-07  1.552e-07   1.805   0.0778 .  
-## `Murder:Illiteracy` -7.221e-02  3.253e-02  -2.220   0.0315 *  
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)         72.898087   0.309171 235.786   <2e-16 ***
+## Murder               0.042494   0.182613   0.233   0.8170    
+## `Murder:y`          -0.006395   0.003975  -1.609   0.1145    
+## `Murder:Illiteracy` -0.053896   0.031652  -1.703   0.0954 .  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.8151 on 45 degrees of freedom
-## Multiple R-squared:  0.6614,	Adjusted R-squared:  0.6313 
-## F-statistic: 21.98 on 4 and 45 DF,  p-value: 4.152e-10
+## Residual standard error: 0.8348 on 46 degrees of freedom
+## Multiple R-squared:  0.6369,	Adjusted R-squared:  0.6132 
+## F-statistic:  26.9 on 3 and 46 DF,  p-value: 3.372e-10
 ## 
-##                 model_id model_method
-## 1 Interact.High.cor.y.lm           lm
-##                                              feats max.nTuningRuns
-## 1 Murder, Murder:y, Murder:Area, Murder:Illiteracy               1
-##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      0.715                 0.002    0.6614201
-##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit max.Rsquared.fit
-## 1    0.9644864    0.6614201    0.7732563        0.6313241        0.5180279
-##   min.RMSESD.fit max.RsquaredSD.fit
-## 1      0.1352115         0.05523021
+##                 model_id model_method                               feats
+## 1 Interact.High.cor.y.lm           lm Murder, Murder:y, Murder:Illiteracy
+##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
+## 1               1                      0.917                 0.003
+##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
+## 1    0.6369065    0.8436601    0.6369065    0.8007596        0.6132265
+##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
+## 1        0.6419329      0.2626833          0.2591354
 ```
 
 ```r
@@ -2204,42 +1869,18 @@ ret_lst <- myfit_mdl(model_id="Low.cor.X",
 
 ```
 ## [1] "fitting model: Low.cor.X.lm"
-## [1] "    indep_vars: HS.Grad, state.region.fctr, Income, Frost, state.division.fctr, .rnorm, Population, state.area, x, Murder"
-## + Fold1: parameter=none
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
+## [1] "    indep_vars: HS.Grad, Income, Frost, .rnorm, Population, Area, x, Murder"
+## + Fold1: parameter=none 
 ## - Fold1: parameter=none 
-## + Fold2: parameter=none
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
+## + Fold2: parameter=none 
 ## - Fold2: parameter=none 
-## + Fold3: parameter=none
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
+## + Fold3: parameter=none 
 ## - Fold3: parameter=none 
 ## Aggregating results
 ## Fitting final model on full training set
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/fit.models_0-17.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-18.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-19.png) 
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-17.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-18.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-19.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-20.png) 
 
 ```
 ## 
@@ -2248,133 +1889,46 @@ ret_lst <- myfit_mdl(model_id="Low.cor.X",
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.06750 -0.37853  0.01932  0.40457  1.22850 
+## -1.12410 -0.47124 -0.03286  0.52312  1.18588 
 ## 
-## Coefficients: (3 not defined because of singularities)
-##                                           Estimate Std. Error t value
-## (Intercept)                              6.749e+01  3.463e+00  19.492
-## HS.Grad                                  3.123e-02  3.004e-02   1.040
-## state.region.fctrWest                   -8.070e-01  1.066e+00  -0.757
-## state.region.fctrNortheast              -1.049e+00  8.416e-01  -1.246
-## `state.region.fctrNorth Central`        -3.830e-02  7.541e-01  -0.051
-## Income                                   3.724e-04  2.771e-04   1.344
-## Frost                                   -4.133e-03  3.658e-03  -1.130
-## state.division.fctrPacific              -4.429e-01  6.910e-01  -0.641
-## state.division.fctrMountain                     NA         NA      NA
-## `state.division.fctrWest South Central`  1.266e-01  5.922e-01   0.214
-## `state.division.fctrNew England`         9.349e-01  6.320e-01   1.479
-## `state.division.fctrSouth Atlantic`     -7.454e-01  5.506e-01  -1.354
-## `state.division.fctrEast North Central` -3.752e-01  5.762e-01  -0.651
-## `state.division.fctrWest North Central`         NA         NA      NA
-## `state.division.fctrMiddle Atlantic`            NA         NA      NA
-## .rnorm                                  -3.349e-02  9.985e-02  -0.335
-## Population                               7.477e-05  3.545e-05   2.109
-## state.area                              -2.850e-06  1.818e-06  -1.567
-## x                                       -3.128e-02  3.720e-02  -0.841
-## Murder                                  -2.714e-01  5.304e-02  -5.116
-##                                         Pr(>|t|)    
-## (Intercept)                              < 2e-16 ***
-## HS.Grad                                   0.3060    
-## state.region.fctrWest                     0.4544    
-## state.region.fctrNortheast                0.2214    
-## `state.region.fctrNorth Central`          0.9598    
-## Income                                    0.1880    
-## Frost                                     0.2667    
-## state.division.fctrPacific                0.5260    
-## state.division.fctrMountain                   NA    
-## `state.division.fctrWest South Central`   0.8321    
-## `state.division.fctrNew England`          0.1485    
-## `state.division.fctrSouth Atlantic`       0.1850    
-## `state.division.fctrEast North Central`   0.5195    
-## `state.division.fctrWest North Central`       NA    
-## `state.division.fctrMiddle Atlantic`          NA    
-## .rnorm                                    0.7395    
-## Population                                0.0426 *  
-## state.area                                0.1266    
-## x                                         0.4065    
-## Murder                                  1.31e-05 ***
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  6.993e+01  1.334e+00  52.433  < 2e-16 ***
+## HS.Grad      1.419e-02  2.434e-02   0.583   0.5630    
+## Income       1.089e-04  2.387e-04   0.456   0.6506    
+## Frost       -3.361e-03  2.835e-03  -1.185   0.2427    
+## .rnorm       6.152e-02  9.918e-02   0.620   0.5385    
+## Population   6.798e-05  2.795e-05   2.432   0.0195 *  
+## Area        -2.142e-06  1.757e-06  -1.219   0.2298    
+## x           -2.385e-02  1.091e-02  -2.185   0.0346 *  
+## Murder      -3.103e-01  4.257e-02  -7.289 6.45e-09 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6768 on 33 degrees of freedom
-## Multiple R-squared:  0.8288,	Adjusted R-squared:  0.7458 
-## F-statistic: 9.986 on 16 and 33 DF,  p-value: 1.92e-08
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-![](USCensus1977_State_HW4_files/figure-html/fit.models_0-20.png) 
-
-```
+## Residual standard error: 0.7083 on 41 degrees of freedom
+## Multiple R-squared:  0.7671,	Adjusted R-squared:  0.7216 
+## F-statistic: 16.88 on 8 and 41 DF,  p-value: 9.511e-11
+## 
 ##       model_id model_method
 ## 1 Low.cor.X.lm           lm
-##                                                                                                       feats
-## 1 HS.Grad, state.region.fctr, Income, Frost, state.division.fctr, .rnorm, Population, state.area, x, Murder
+##                                                         feats
+## 1 HS.Grad, Income, Frost, .rnorm, Population, Area, x, Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      0.727                 0.006
+## 1               1                      0.928                 0.003
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
-## 1    0.8288182    0.7679484    0.8248221    0.5562021         0.745821
+## 1    0.7670823     1.084276    0.7662855    0.6424446         0.721635
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
-## 1        0.7129405       0.125369         0.07850497
+## 1        0.5831535      0.3656232          0.1273796
 ```
 
 ```r
-# User specified
+# All X that is not user excluded
+model_id_pfx <- "All.X";
+indep_vars_vctr <- setdiff(names(glb_trnent_df), 
+                            union(glb_rsp_var, glb_exclude_vars_as_features))
 for (method in glb_models_method_vctr) {
     print(sprintf("iterating over method:%s", method))
-
-    # All X that is not user excluded
-    indep_vars_vctr <- setdiff(names(glb_trnent_df), 
-        union(glb_rsp_var, glb_exclude_vars_as_features))
     
-    # easier to exclude features
-#     indep_vars_vctr <- setdiff(names(glb_trnent_df), 
-#         union(union(glb_rsp_var, glb_exclude_vars_as_features), 
-#               c("<feat1_name>", "<feat2_name>")))
-    
-    # easier to include features
-#     indep_vars_vctr <- c("<feat1_name>", "<feat2_name>")
-
-    # User specified bivariate models
-#     indep_vars_vctr_lst <- list()
-#     for (feat in setdiff(names(glb_trnent_df), 
-#                          union(glb_rsp_var, glb_exclude_vars_as_features)))
-#         indep_vars_vctr_lst[["feat"]] <- feat
-
-    # User specified combinatorial models
-#     indep_vars_vctr_lst <- list()
-#     combn_mtrx <- combn(c("<feat1_name>", "<feat2_name>", "<featn_name>"), 
-#                           <num_feats_to_choose>)
-#     for (combn_ix in 1:ncol(combn_mtrx))
-#         #print(combn_mtrx[, combn_ix])
-#         indep_vars_vctr_lst[[combn_ix]] <- combn_mtrx[, combn_ix]
-
-#     glb_sel_mdl <- glb_sel_wlm_mdl <- ret_lst[["model"]]
-#     rpart_sel_wlm_mdl <- rpart(reformulate(indep_vars_vctr, response=glb_rsp_var), 
-#                                data=glb_trnent_df, method="class", 
-#                                control=rpart.control(cp=glb_sel_wlm_mdl$bestTune$cp),
-#                            parms=list(loss=glb_model_metric_terms))
-#     print("rpart_sel_wlm_mdl"); prp(rpart_sel_wlm_mdl)
-# 
-    model_id_pfx <- "All.X";
     ret_lst <- myfit_mdl(model_id=paste0(model_id_pfx, ""), model_method=method,
                             indep_vars_vctr=indep_vars_vctr,
                             model_type=glb_model_type,
@@ -2398,62 +1952,25 @@ for (method in glb_models_method_vctr) {
                                 model_type=glb_model_type,
                                 rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
                                 fit_df=glb_trnent_df, OOB_df=glb_newent_df,
-                    n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
-    
-    # rf is hard-coded in caret to recognize only Accuracy / Kappa evaluation metrics
-    #   only for OOB in trainControl ?
-
-#     ret_lst <- myfit_mdl_fn(model_id=paste0(model_id_pfx, ""), model_method=method,
-#                             indep_vars_vctr=indep_vars_vctr,
-#                             rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
-#                             fit_df=glb_trnent_df, OOB_df=glb_newent_df,
-#                             n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df,
-#                             model_loss_mtrx=glb_model_metric_terms,
-#                             model_summaryFunction=glb_model_metric_smmry,
-#                             model_metric=glb_model_metric,
-#                             model_metric_maximize=glb_model_metric_maximize)
+                    n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)    
 }
 ```
 
 ```
 ## [1] "iterating over method:lm"
 ## [1] "fitting model: All.X.lm"
-## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm"
-## + Fold1: parameter=none
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm"
+## + Fold1: parameter=none 
 ## - Fold1: parameter=none 
-## + Fold2: parameter=none
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
+## + Fold2: parameter=none 
 ## - Fold2: parameter=none 
-## + Fold3: parameter=none
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
+## + Fold3: parameter=none 
 ## - Fold3: parameter=none 
 ## Aggregating results
 ## Fitting final model on full training set
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/fit.models_0-21.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-22.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-23.png) 
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-21.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-22.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-23.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-24.png) 
 
 ```
 ## 
@@ -2461,131 +1978,47 @@ for (method in glb_models_method_vctr) {
 ## lm(formula = .outcome ~ ., data = dat)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -1.0260 -0.3662  0.0486  0.4035  1.0910 
+##      Min       1Q   Median       3Q      Max 
+## -1.05257 -0.41608 -0.04544  0.51756  1.25603 
 ## 
-## Coefficients: (3 not defined because of singularities)
-##                                           Estimate Std. Error t value
-## (Intercept)                              7.268e+01  5.024e+00  14.467
-## Population                               8.892e-05  3.884e-05   2.290
-## Income                                   3.801e-04  2.723e-04   1.396
-## Illiteracy                              -1.072e-01  4.422e-01  -0.242
-## Murder                                  -3.213e-01  5.892e-02  -5.453
-## HS.Grad                                  1.302e-02  3.809e-02   0.342
-## Frost                                    3.955e-04  4.690e-03   0.084
-## Area                                    -1.029e-04  8.678e-05  -1.186
-## state.area                               9.736e-05  8.376e-05   1.162
-## x                                       -2.049e-02  3.773e-02  -0.543
-## y                                       -8.631e-02  4.984e-02  -1.732
-## state.division.fctrPacific              -3.042e-01  1.542e+00  -0.197
-## state.division.fctrMountain             -2.601e-01  1.112e+00  -0.234
-## `state.division.fctrWest South Central`  6.599e-02  5.855e-01   0.113
-## `state.division.fctrNew England`        -2.928e-01  8.927e-01  -0.328
-## `state.division.fctrSouth Atlantic`     -1.031e+00  5.580e-01  -1.848
-## `state.division.fctrEast North Central` -3.284e-01  6.428e-01  -0.511
-## `state.division.fctrWest North Central`  7.216e-02  7.498e-01   0.096
-## `state.division.fctrMiddle Atlantic`    -1.101e+00  8.698e-01  -1.266
-## state.region.fctrWest                           NA         NA      NA
-## state.region.fctrNortheast                      NA         NA      NA
-## `state.region.fctrNorth Central`                NA         NA      NA
-## .rnorm                                  -2.416e-02  9.895e-02  -0.244
-##                                         Pr(>|t|)    
-## (Intercept)                             4.57e-15 ***
-## Population                                0.0292 *  
-## Income                                    0.1730    
-## Illiteracy                                0.8102    
-## Murder                                  6.48e-06 ***
-## HS.Grad                                   0.7348    
-## Frost                                     0.9334    
-## Area                                      0.2450    
-## state.area                                0.2543    
-## x                                         0.5912    
-## y                                         0.0936 .  
-## state.division.fctrPacific                0.8450    
-## state.division.fctrMountain               0.8167    
-## `state.division.fctrWest South Central`   0.9110    
-## `state.division.fctrNew England`          0.7452    
-## `state.division.fctrSouth Atlantic`       0.0745 .  
-## `state.division.fctrEast North Central`   0.6132    
-## `state.division.fctrWest North Central`   0.9240    
-## `state.division.fctrMiddle Atlantic`      0.2154    
-## state.region.fctrWest                         NA    
-## state.region.fctrNortheast                    NA    
-## `state.region.fctrNorth Central`              NA    
-## .rnorm                                    0.8088    
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.295e+01  2.489e+00  29.306  < 2e-16 ***
+## Population   7.709e-05  2.853e-05   2.702   0.0102 *  
+## Income       1.927e-04  2.357e-04   0.817   0.4187    
+## Illiteracy  -7.134e-02  3.614e-01  -0.197   0.8445    
+## Murder      -3.606e-01  4.837e-02  -7.456 5.11e-09 ***
+## HS.Grad      8.650e-03  2.544e-02   0.340   0.7356    
+## Frost       -8.849e-05  3.545e-03  -0.025   0.9802    
+## Area        -9.875e-07  1.961e-06  -0.503   0.6175    
+## x           -2.455e-02  1.074e-02  -2.287   0.0277 *  
+## y           -8.043e-02  3.824e-02  -2.103   0.0419 *  
+## .rnorm       5.976e-02  9.611e-02   0.622   0.5377    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.6641 on 30 degrees of freedom
-## Multiple R-squared:  0.8501,	Adjusted R-squared:  0.7552 
-## F-statistic: 8.958 on 19 and 30 DF,  p-value: 9.655e-08
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
-## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient
-## fit may be misleading
-```
-
-```
+## Residual standard error: 0.6863 on 39 degrees of freedom
+## Multiple R-squared:  0.792,	Adjusted R-squared:  0.7387 
+## F-statistic: 14.85 on 10 and 39 DF,  p-value: 2.028e-10
+## 
 ##   model_id model_method
 ## 1 All.X.lm           lm
-##                                                                                                                            feats
-## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
+##                                                                        feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                       0.75                 0.007
+## 1               1                       0.71                 0.004
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
-## 1    0.8501492    0.9978482    0.8471627    0.5195263        0.7552437
+## 1    0.7919942     1.261888    0.7913361    0.6070389        0.7386593
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
-## 1         0.554711      0.1337508         0.07368833
+## 1        0.5779784      0.7360377          0.1636766
 ## [1] "iterating over method:glm"
 ## [1] "fitting model: All.X.glm"
-## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm"
-## + Fold1: parameter=none
-```
-
-```
-## Warning in predict.lm(object, newdata, se.fit, scale = 1, type =
-## ifelse(type == : prediction from a rank-deficient fit may be misleading
-```
-
-```
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm"
+## + Fold1: parameter=none 
 ## - Fold1: parameter=none 
-## + Fold2: parameter=none
-```
-
-```
-## Warning in predict.lm(object, newdata, se.fit, scale = 1, type =
-## ifelse(type == : prediction from a rank-deficient fit may be misleading
-```
-
-```
+## + Fold2: parameter=none 
 ## - Fold2: parameter=none 
-## + Fold3: parameter=none
-```
-
-```
-## Warning in predict.lm(object, newdata, se.fit, scale = 1, type =
-## ifelse(type == : prediction from a rank-deficient fit may be misleading
-```
-
-![](USCensus1977_State_HW4_files/figure-html/fit.models_0-24.png) 
-
-```
+## + Fold3: parameter=none 
 ## - Fold3: parameter=none 
 ## Aggregating results
 ## Fitting final model on full training set
@@ -2599,121 +2032,65 @@ for (method in glb_models_method_vctr) {
 ## NULL
 ## 
 ## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.0260  -0.3662   0.0486   0.4035   1.0910  
+##      Min        1Q    Median        3Q       Max  
+## -1.05257  -0.41608  -0.04544   0.51756   1.25603  
 ## 
-## Coefficients: (3 not defined because of singularities)
-##                                           Estimate Std. Error t value
-## (Intercept)                              7.268e+01  5.024e+00  14.467
-## Population                               8.892e-05  3.884e-05   2.290
-## Income                                   3.801e-04  2.723e-04   1.396
-## Illiteracy                              -1.072e-01  4.422e-01  -0.242
-## Murder                                  -3.213e-01  5.892e-02  -5.453
-## HS.Grad                                  1.302e-02  3.809e-02   0.342
-## Frost                                    3.955e-04  4.690e-03   0.084
-## Area                                    -1.029e-04  8.678e-05  -1.186
-## state.area                               9.736e-05  8.376e-05   1.162
-## x                                       -2.049e-02  3.773e-02  -0.543
-## y                                       -8.631e-02  4.984e-02  -1.732
-## state.division.fctrPacific              -3.042e-01  1.542e+00  -0.197
-## state.division.fctrMountain             -2.601e-01  1.112e+00  -0.234
-## `state.division.fctrWest South Central`  6.599e-02  5.855e-01   0.113
-## `state.division.fctrNew England`        -2.928e-01  8.927e-01  -0.328
-## `state.division.fctrSouth Atlantic`     -1.031e+00  5.580e-01  -1.848
-## `state.division.fctrEast North Central` -3.284e-01  6.428e-01  -0.511
-## `state.division.fctrWest North Central`  7.216e-02  7.498e-01   0.096
-## `state.division.fctrMiddle Atlantic`    -1.101e+00  8.698e-01  -1.266
-## state.region.fctrWest                           NA         NA      NA
-## state.region.fctrNortheast                      NA         NA      NA
-## `state.region.fctrNorth Central`                NA         NA      NA
-## .rnorm                                  -2.416e-02  9.895e-02  -0.244
-##                                         Pr(>|t|)    
-## (Intercept)                             4.57e-15 ***
-## Population                                0.0292 *  
-## Income                                    0.1730    
-## Illiteracy                                0.8102    
-## Murder                                  6.48e-06 ***
-## HS.Grad                                   0.7348    
-## Frost                                     0.9334    
-## Area                                      0.2450    
-## state.area                                0.2543    
-## x                                         0.5912    
-## y                                         0.0936 .  
-## state.division.fctrPacific                0.8450    
-## state.division.fctrMountain               0.8167    
-## `state.division.fctrWest South Central`   0.9110    
-## `state.division.fctrNew England`          0.7452    
-## `state.division.fctrSouth Atlantic`       0.0745 .  
-## `state.division.fctrEast North Central`   0.6132    
-## `state.division.fctrWest North Central`   0.9240    
-## `state.division.fctrMiddle Atlantic`      0.2154    
-## state.region.fctrWest                         NA    
-## state.region.fctrNortheast                    NA    
-## `state.region.fctrNorth Central`              NA    
-## .rnorm                                    0.8088    
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.295e+01  2.489e+00  29.306  < 2e-16 ***
+## Population   7.709e-05  2.853e-05   2.702   0.0102 *  
+## Income       1.927e-04  2.357e-04   0.817   0.4187    
+## Illiteracy  -7.134e-02  3.614e-01  -0.197   0.8445    
+## Murder      -3.606e-01  4.837e-02  -7.456 5.11e-09 ***
+## HS.Grad      8.650e-03  2.544e-02   0.340   0.7356    
+## Frost       -8.849e-05  3.545e-03  -0.025   0.9802    
+## Area        -9.875e-07  1.961e-06  -0.503   0.6175    
+## x           -2.455e-02  1.074e-02  -2.287   0.0277 *  
+## y           -8.043e-02  3.824e-02  -2.103   0.0419 *  
+## .rnorm       5.976e-02  9.611e-02   0.622   0.5377    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## (Dispersion parameter for gaussian family taken to be 0.4410559)
+## (Dispersion parameter for gaussian family taken to be 0.4709412)
 ## 
 ##     Null deviance: 88.299  on 49  degrees of freedom
-## Residual deviance: 13.232  on 30  degrees of freedom
-## AIC: 117.42
+## Residual deviance: 18.367  on 39  degrees of freedom
+## AIC: 115.82
 ## 
 ## Number of Fisher Scoring iterations: 2
-```
-
-```
-## Warning in predict.lm(object, newdata, se.fit, scale = 1, type =
-## ifelse(type == : prediction from a rank-deficient fit may be misleading
-```
-
-```
-## Warning in predict.lm(object, newdata, se.fit, scale = 1, type =
-## ifelse(type == : prediction from a rank-deficient fit may be misleading
-```
-
-```
-## Warning in predict.lm(object, newdata, se.fit, scale = 1, type =
-## ifelse(type == : prediction from a rank-deficient fit may be misleading
-```
-
-```
-## Warning in predict.lm(object, newdata, se.fit, scale = 1, type =
-## ifelse(type == : prediction from a rank-deficient fit may be misleading
-```
-
-![](USCensus1977_State_HW4_files/figure-html/fit.models_0-28.png) 
-
-```
+## 
 ##    model_id model_method
 ## 1 All.X.glm          glm
-##                                                                                                                            feats
-## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
+##                                                                        feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      0.761                 0.011
+## 1               1                      0.732                 0.007
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB min.aic.fit
-## 1    0.8501492    0.9978482    0.8471627    0.5195263    117.4234
+## 1    0.7919942     1.261888    0.7913361    0.6070389    115.8197
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
-## 1         0.554711      0.1337508         0.07368833
+## 1        0.5779784      0.7360377          0.1636766
 ## [1] "iterating over method:rpart"
 ## [1] "fitting model: All.X.rpart"
-## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr"
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y"
 ## + Fold1: cp=0.0741 
 ## - Fold1: cp=0.0741 
 ## + Fold2: cp=0.0741 
 ## - Fold2: cp=0.0741 
 ## + Fold3: cp=0.0741 
-## - Fold3: cp=0.0741 
-## Aggregating results
-## Selecting tuning parameters
-## Fitting cp = 0.0741 on full training set
+## - Fold3: cp=0.0741
 ```
 
 ```
-## Warning in myfit_mdl(model_id = paste0(model_id_pfx, ""), model_method =
-## method, : model's bestTune found at an extreme of tuneGrid for parameter:
-## cp
+## Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info =
+## trainInfo, : There were missing values in resampled performance measures.
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-28.png) 
+
+```
+## Aggregating results
+## Selecting tuning parameters
+## Fitting cp = 0.149 on full training set
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-29.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-30.png) 
@@ -2725,16 +2102,13 @@ for (method in glb_models_method_vctr) {
 ##     surrogatestyle = 0, maxdepth = 30, xval = 0))
 ##   n= 50 
 ## 
-##           CP nsplit rel error
-## 1 0.47910997      0 1.0000000
-## 2 0.14868323      1 0.5208900
-## 3 0.07409923      2 0.3722068
+##          CP nsplit rel error
+## 1 0.4791100      0   1.00000
+## 2 0.1486832      1   0.52089
 ## 
 ## Variable importance
-##     Murder          y Illiteracy    HS.Grad      Frost Population 
-##         31         18         16         13         12          8 
-##       Area 
-##          2 
+##     Murder          y    HS.Grad Illiteracy      Frost Population 
+##         30         17         14         14         13         11 
 ## 
 ## Node number 1: 50 observations,    complexity param=0.47911
 ##   mean=70.8786, MSE=1.76598 
@@ -2752,53 +2126,32 @@ for (method in glb_models_method_vctr) {
 ##       Frost      < 125.5     to the left,  agree=0.74, adj=0.435, (0 split)
 ##       Population < 1671.5    to the right, agree=0.70, adj=0.348, (0 split)
 ## 
-## Node number 2: 27 observations,    complexity param=0.1486832
+## Node number 2: 27 observations
 ##   mean=70.02963, MSE=0.989848 
-##   left son=4 (8 obs) right son=5 (19 obs)
-##   Primary splits:
-##       Murder     < 11.2      to the right, improve=0.4912307, (0 missing)
-##       HS.Grad    < 44.8      to the left,  improve=0.4129798, (0 missing)
-##       Income     < 4139.5    to the left,  improve=0.3715959, (0 missing)
-##       Illiteracy < 1.95      to the right, improve=0.3131356, (0 missing)
-##       y          < 33.9191   to the left,  improve=0.2816457, (0 missing)
-##   Surrogate splits:
-##       Illiteracy < 1.95      to the right, agree=0.889, adj=0.625, (0 split)
-##       y          < 33.9191   to the left,  agree=0.889, adj=0.625, (0 split)
-##       HS.Grad    < 64.55     to the right, agree=0.778, adj=0.250, (0 split)
-##       Frost      < 62.5      to the left,  agree=0.778, adj=0.250, (0 split)
-##       Area       < 209247.5  to the right, agree=0.778, adj=0.250, (0 split)
 ## 
 ## Node number 3: 23 observations
 ##   mean=71.87522, MSE=0.8377467 
-## 
-## Node number 4: 8 observations
-##   mean=68.955, MSE=0.734025 
-## 
-## Node number 5: 19 observations
-##   mean=70.48211, MSE=0.406585 
 ## 
 ## n= 50 
 ## 
 ## node), split, n, deviance, yval
 ##       * denotes terminal node
 ## 
-## 1) root 50 88.299000 70.87860  
-##   2) Murder>=6.55 27 26.725900 70.02963  
-##     4) Murder>=11.2 8  5.872200 68.95500 *
-##     5) Murder< 11.2 19  7.725116 70.48211 *
-##   3) Murder< 6.55 23 19.268170 71.87522 *
+## 1) root 50 88.29900 70.87860  
+##   2) Murder>=6.55 27 26.72590 70.02963 *
+##   3) Murder< 6.55 23 19.26817 71.87522 *
 ##      model_id model_method
 ## 1 All.X.rpart        rpart
-##                                                                                                                    feats
-## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
+##                                                                feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               3                      0.823                 0.014
+## 1               3                      0.786                  0.01
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit
-## 1    0.6277932     1.087313    0.6277932    0.8107464        0.3705278
+## 1      0.47911     1.039829      0.47911    0.9591045        0.4395211
 ##   min.RMSESD.fit max.RsquaredSD.fit
-## 1      0.1011328          0.1087759
+## 1      0.2490712          0.2652752
 ## [1] "fitting model: All.X.cp.0.rpart"
-## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr"
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y"
 ## Fitting cp = 0 on full training set
 ```
 
@@ -2816,18 +2169,10 @@ for (method in glb_models_method_vctr) {
 ## 4 0.00000000      3 0.2981076
 ## 
 ## Variable importance
-##                         Murder                              y 
-##                             26                             15 
-##                     Illiteracy                        HS.Grad 
-##                             15                             11 
-##                          Frost                     Population 
-##                             10                              7 
-##                           Area                              x 
-##                              4                              3 
-##                     state.area     state.region.fctrNortheast 
-##                              3                              3 
-## state.division.fctrNew England 
-##                              2 
+##     Murder          y Illiteracy    HS.Grad      Frost Population 
+##         28         16         16         13         11          8 
+##       Area          x     Income 
+##          5          3          1 
 ## 
 ## Node number 1: 50 observations,    complexity param=0.47911
 ##   mean=70.8786, MSE=1.76598 
@@ -2865,17 +2210,17 @@ for (method in glb_models_method_vctr) {
 ##   mean=71.87522, MSE=0.8377467 
 ##   left son=6 (9 obs) right son=7 (14 obs)
 ##   Primary splits:
-##       x                              < -83.72205 to the right, improve=0.3395697, (0 missing)
-##       state.region.fctrNorth Central < 0.5       to the left,  improve=0.2573045, (0 missing)
-##       Murder                         < 4.75      to the right, improve=0.2006943, (0 missing)
-##       HS.Grad                        < 59.25     to the left,  improve=0.1946401, (0 missing)
-##       Income                         < 4458.5    to the left,  improve=0.1798387, (0 missing)
+##       x       < -83.72205 to the right, improve=0.3395697, (0 missing)
+##       Murder  < 4.75      to the right, improve=0.2006943, (0 missing)
+##       HS.Grad < 59.25     to the left,  improve=0.1946401, (0 missing)
+##       Income  < 4458.5    to the left,  improve=0.1798387, (0 missing)
+##       Area    < 49715     to the left,  improve=0.1668039, (0 missing)
 ##   Surrogate splits:
-##       Area                           < 49715     to the left,  agree=0.957, adj=0.889, (0 split)
-##       state.area                     < 50743.5   to the left,  agree=0.957, adj=0.889, (0 split)
-##       state.region.fctrNortheast     < 0.5       to the right, agree=0.957, adj=0.889, (0 split)
-##       state.division.fctrNew England < 0.5       to the right, agree=0.870, adj=0.667, (0 split)
-##       Illiteracy                     < 0.65      to the right, agree=0.783, adj=0.444, (0 split)
+##       Area       < 49715     to the left,  agree=0.957, adj=0.889, (0 split)
+##       Illiteracy < 0.65      to the right, agree=0.783, adj=0.444, (0 split)
+##       HS.Grad    < 58.75     to the left,  agree=0.783, adj=0.444, (0 split)
+##       Population < 5201.5    to the right, agree=0.739, adj=0.333, (0 split)
+##       Income     < 3945      to the left,  agree=0.696, adj=0.222, (0 split)
 ## 
 ## Node number 4: 8 observations
 ##   mean=68.955, MSE=0.734025 
@@ -2903,15 +2248,15 @@ for (method in glb_models_method_vctr) {
 ##     7) x< -83.72205 14  7.384886 72.30286 *
 ##           model_id model_method
 ## 1 All.X.cp.0.rpart        rpart
-##                                                                                                                    feats
-## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
+##                                                                feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               0                      0.468                 0.015
+## 1               0                      0.454                 0.008
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB
 ## 1    0.7018924    0.7255701    0.7018924    0.7255701
 ## [1] "iterating over method:rf"
 ## [1] "fitting model: All.X.rf"
-## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm"
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm"
 ```
 
 ```
@@ -2925,13 +2270,13 @@ for (method in glb_models_method_vctr) {
 ```
 ## + : mtry= 2 
 ## - : mtry= 2 
-## + : mtry=12 
-## - : mtry=12 
-## + : mtry=22 
-## - : mtry=22 
+## + : mtry= 6 
+## - : mtry= 6 
+## + : mtry=10 
+## - : mtry=10 
 ## Aggregating results
 ## Selecting tuning parameters
-## Fitting mtry = 12 on full training set
+## Fitting mtry = 6 on full training set
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-32.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-33.png) 
@@ -2944,7 +2289,7 @@ for (method in glb_models_method_vctr) {
 ## mse             500    -none-     numeric  
 ## rsq             500    -none-     numeric  
 ## oob.times        50    -none-     numeric  
-## importance       22    -none-     numeric  
+## importance       10    -none-     numeric  
 ## importanceSD      0    -none-     NULL     
 ## localImportance   0    -none-     NULL     
 ## proximity         0    -none-     NULL     
@@ -2955,29 +2300,35 @@ for (method in glb_models_method_vctr) {
 ## y                50    -none-     numeric  
 ## test              0    -none-     NULL     
 ## inbag             0    -none-     NULL     
-## xNames           22    -none-     character
+## xNames           10    -none-     character
 ## problemType       1    -none-     character
 ## tuneValue         1    data.frame list     
 ## obsLevels         1    -none-     logical  
 ##   model_id model_method
 ## 1 All.X.rf           rf
-##                                                                                                                            feats
-## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
+##                                                                        feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               3                      1.177                 0.086
+## 1               3                      1.075                 0.064
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit
-## 1    0.9193519    0.9136977    0.9122315    0.3936973        0.5272634
+## 1    0.9240335    0.9176627    0.9151455    0.3871071        0.5231516
 ## [1] "fitting model: All.X.no.rnorm.rf"
-## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr"
-## + : mtry= 2 
-## - : mtry= 2 
-## + : mtry=11 
-## - : mtry=11 
-## + : mtry=21 
-## - : mtry=21 
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y"
+## + : mtry=2 
+## - : mtry=2 
+## + : mtry=5 
+## - : mtry=5 
+## + : mtry=9 
+## - : mtry=9 
 ## Aggregating results
 ## Selecting tuning parameters
-## Fitting mtry = 11 on full training set
+## Fitting mtry = 2 on full training set
+```
+
+```
+## Warning in myfit_mdl(model_id = paste0(model_id_pfx, ".no.rnorm"),
+## model_method = method, : model's bestTune found at an extreme of tuneGrid
+## for parameter: mtry
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-34.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-35.png) 
@@ -2990,7 +2341,7 @@ for (method in glb_models_method_vctr) {
 ## mse             500    -none-     numeric  
 ## rsq             500    -none-     numeric  
 ## oob.times        50    -none-     numeric  
-## importance       21    -none-     numeric  
+## importance        9    -none-     numeric  
 ## importanceSD      0    -none-     NULL     
 ## localImportance   0    -none-     NULL     
 ## proximity         0    -none-     NULL     
@@ -3001,23 +2352,593 @@ for (method in glb_models_method_vctr) {
 ## y                50    -none-     numeric  
 ## test              0    -none-     NULL     
 ## inbag             0    -none-     NULL     
-## xNames           21    -none-     character
+## xNames            9    -none-     character
 ## problemType       1    -none-     character
 ## tuneValue         1    data.frame list     
 ## obsLevels         1    -none-     logical  
 ##            model_id model_method
 ## 1 All.X.no.rnorm.rf           rf
-##                                                                                                                    feats
-## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
+##                                                                feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               3                      0.824                  0.08
+## 1               3                       0.94                 0.037
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit
-## 1    0.9194504     0.891101    0.9194504    0.3771624        0.5503567
+## 1    0.9038353    0.9057207    0.9038353    0.4121016        0.5354817
 ```
 
 ```r
+# User specified
+    # easier to exclude features
+model_id_pfx <- "Excl.xy.X";
+indep_vars_vctr <- setdiff(names(glb_trnent_df), 
+                        union(union(glb_rsp_var, glb_exclude_vars_as_features), 
+                                c("x", "y")))
+for (method in "lm") {
+    ret_lst <- myfit_mdl(model_id=paste0(model_id_pfx, ""), model_method=method,
+                            indep_vars_vctr=indep_vars_vctr,
+                            model_type=glb_model_type,
+                            rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                            fit_df=glb_trnent_df, OOB_df=glb_newent_df,
+                n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
+}
+```
+
+```
+## [1] "fitting model: Excl.xy.X.lm"
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, .rnorm"
+## + Fold1: parameter=none 
+## - Fold1: parameter=none 
+## + Fold2: parameter=none 
+## - Fold2: parameter=none 
+## + Fold3: parameter=none 
+## - Fold3: parameter=none 
+## Aggregating results
+## Fitting final model on full training set
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-36.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-37.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-38.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-39.png) 
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5325 -0.4892  0.0101  0.5755  1.5384 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.108e+01  1.765e+00  40.274  < 2e-16 ***
+## Population   5.104e-05  2.934e-05   1.740   0.0894 .  
+## Income      -1.694e-05  2.457e-04  -0.069   0.9454    
+## Illiteracy   3.389e-02  3.680e-01   0.092   0.9271    
+## Murder      -3.077e-01  4.759e-02  -6.465 9.42e-08 ***
+## HS.Grad      4.768e-02  2.349e-02   2.030   0.0489 *  
+## Frost       -6.183e-03  3.210e-03  -1.926   0.0610 .  
+## Area        -2.205e-07  1.687e-06  -0.131   0.8966    
+## .rnorm       8.134e-02  1.043e-01   0.779   0.4402    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7483 on 41 degrees of freedom
+## Multiple R-squared:   0.74,	Adjusted R-squared:  0.6893 
+## F-statistic: 14.59 on 8 and 41 DF,  p-value: 8.191e-10
+## 
+##       model_id model_method
+## 1 Excl.xy.X.lm           lm
+##                                                                  feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, .rnorm
+##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
+## 1               1                      0.736                 0.004
+##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
+## 1    0.7400093    0.8718015    0.7331847    0.6864332        0.6892794
+##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
+## 1        0.5965373       0.180015          0.1589779
+```
+
+```r
+for (method in "rpart") {
+    ret_lst <- myfit_mdl(model_id=paste0(model_id_pfx, ".cp.0."), model_method=method,
+                            indep_vars_vctr=indep_vars_vctr,
+                            model_type=glb_model_type,
+                            rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                            fit_df=glb_trnent_df, OOB_df=glb_newent_df,
+                n_cv_folds=0, tune_models_df=data.frame(parameter="cp", min=0.0, max=0.0, by=0.1))
+    ret_lst <- myfit_mdl(model_id=paste0(model_id_pfx, ".cp.opt."), model_method=method,
+                            indep_vars_vctr=indep_vars_vctr,
+                            model_type=glb_model_type,
+                            rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                            fit_df=glb_trnent_df, OOB_df=glb_newent_df,
+                n_cv_folds=10, tune_models_df=data.frame(parameter="cp", min=0.01, max=0.50, by=0.01))
+}
+```
+
+```
+## [1] "fitting model: Excl.xy.X.cp.0..rpart"
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area"
+## Fitting cp = 0 on full training set
+```
+
+```
+## Call:
+## rpart(formula = .outcome ~ ., control = list(minsplit = 20, minbucket = 7, 
+##     cp = 0, maxcompete = 4, maxsurrogate = 5, usesurrogate = 2, 
+##     surrogatestyle = 0, maxdepth = 30, xval = 0))
+##   n= 50 
+## 
+##           CP nsplit rel error
+## 1 0.47910997      0 1.0000000
+## 2 0.14868323      1 0.5208900
+## 3 0.04379453      2 0.3722068
+## 4 0.00000000      3 0.3284123
+## 
+## Variable importance
+##     Murder Illiteracy    HS.Grad      Frost       Area Population 
+##         35         17         14         13         11         10 
+## 
+## Node number 1: 50 observations,    complexity param=0.47911
+##   mean=70.8786, MSE=1.76598 
+##   left son=2 (27 obs) right son=3 (23 obs)
+##   Primary splits:
+##       Murder     < 6.55     to the right, improve=0.4791100, (0 missing)
+##       HS.Grad    < 44.3     to the left,  improve=0.4007892, (0 missing)
+##       Income     < 3891     to the left,  improve=0.3185349, (0 missing)
+##       Illiteracy < 1.35     to the right, improve=0.3150196, (0 missing)
+##       Frost      < 102      to the left,  improve=0.1559469, (0 missing)
+##   Surrogate splits:
+##       Illiteracy < 1.2      to the right, agree=0.76, adj=0.478, (0 split)
+##       HS.Grad    < 53.25    to the left,  agree=0.76, adj=0.478, (0 split)
+##       Frost      < 125.5    to the left,  agree=0.74, adj=0.435, (0 split)
+##       Population < 1671.5   to the right, agree=0.70, adj=0.348, (0 split)
+##       Area       < 9579     to the right, agree=0.70, adj=0.348, (0 split)
+## 
+## Node number 2: 27 observations,    complexity param=0.1486832
+##   mean=70.02963, MSE=0.989848 
+##   left son=4 (8 obs) right son=5 (19 obs)
+##   Primary splits:
+##       Murder     < 11.2     to the right, improve=0.4912307, (0 missing)
+##       HS.Grad    < 44.8     to the left,  improve=0.4129798, (0 missing)
+##       Income     < 4139.5   to the left,  improve=0.3715959, (0 missing)
+##       Illiteracy < 1.95     to the right, improve=0.3131356, (0 missing)
+##       Population < 6859     to the left,  improve=0.1953184, (0 missing)
+##   Surrogate splits:
+##       Illiteracy < 1.95     to the right, agree=0.889, adj=0.625, (0 split)
+##       HS.Grad    < 64.55    to the right, agree=0.778, adj=0.250, (0 split)
+##       Frost      < 62.5     to the left,  agree=0.778, adj=0.250, (0 split)
+##       Area       < 209247.5 to the right, agree=0.778, adj=0.250, (0 split)
+##       Population < 867      to the left,  agree=0.741, adj=0.125, (0 split)
+## 
+## Node number 3: 23 observations,    complexity param=0.04379453
+##   mean=71.87522, MSE=0.8377467 
+##   left son=6 (8 obs) right son=7 (15 obs)
+##   Primary splits:
+##       Murder     < 4.75     to the right, improve=0.20069430, (0 missing)
+##       HS.Grad    < 59.25    to the left,  improve=0.19464010, (0 missing)
+##       Income     < 4458.5   to the left,  improve=0.17983870, (0 missing)
+##       Area       < 49715    to the left,  improve=0.16680390, (0 missing)
+##       Population < 840.5    to the left,  improve=0.09003604, (0 missing)
+##   Surrogate splits:
+##       Population < 608      to the left,  agree=0.739, adj=0.250, (0 split)
+##       Illiteracy < 0.85     to the right, agree=0.739, adj=0.250, (0 split)
+##       Frost      < 126.5    to the left,  agree=0.739, adj=0.250, (0 split)
+##       Income     < 4002.5   to the left,  agree=0.696, adj=0.125, (0 split)
+##       HS.Grad    < 52.9     to the left,  agree=0.696, adj=0.125, (0 split)
+## 
+## Node number 4: 8 observations
+##   mean=68.955, MSE=0.734025 
+## 
+## Node number 5: 19 observations
+##   mean=70.48211, MSE=0.406585 
+## 
+## Node number 6: 8 observations
+##   mean=71.31375, MSE=1.090298 
+## 
+## Node number 7: 15 observations
+##   mean=72.17467, MSE=0.4452516 
+## 
+## n= 50 
+## 
+## node), split, n, deviance, yval
+##       * denotes terminal node
+## 
+## 1) root 50 88.299000 70.87860  
+##   2) Murder>=6.55 27 26.725900 70.02963  
+##     4) Murder>=11.2 8  5.872200 68.95500 *
+##     5) Murder< 11.2 19  7.725116 70.48211 *
+##   3) Murder< 6.55 23 19.268170 71.87522  
+##     6) Murder>=4.75 8  8.722387 71.31375 *
+##     7) Murder< 4.75 15  6.678773 72.17467 *
+##                model_id model_method
+## 1 Excl.xy.X.cp.0..rpart        rpart
+##                                                          feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
+## 1               0                      0.461                 0.007
+##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB
+## 1    0.6715877    0.7615573    0.6715877    0.7615573
+## [1] "fitting model: Excl.xy.X.cp.opt..rpart"
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area"
+## + Fold01: cp=0.01 
+## - Fold01: cp=0.01 
+## + Fold02: cp=0.01 
+## - Fold02: cp=0.01 
+## + Fold03: cp=0.01 
+## - Fold03: cp=0.01 
+## + Fold04: cp=0.01 
+## - Fold04: cp=0.01 
+## + Fold05: cp=0.01 
+## - Fold05: cp=0.01 
+## + Fold06: cp=0.01 
+## - Fold06: cp=0.01 
+## + Fold07: cp=0.01 
+## - Fold07: cp=0.01 
+## + Fold08: cp=0.01 
+## - Fold08: cp=0.01 
+## + Fold09: cp=0.01 
+## - Fold09: cp=0.01 
+## + Fold10: cp=0.01 
+## - Fold10: cp=0.01
+```
+
+```
+## Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info =
+## trainInfo, : There were missing values in resampled performance measures.
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-40.png) 
+
+```
+## Aggregating results
+## Selecting tuning parameters
+## Fitting cp = 0.12 on full training set
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-41.png) 
+
+```
+## Call:
+## rpart(formula = .outcome ~ ., control = list(minsplit = 20, minbucket = 7, 
+##     cp = 0, maxcompete = 4, maxsurrogate = 5, usesurrogate = 2, 
+##     surrogatestyle = 0, maxdepth = 30, xval = 0))
+##   n= 50 
+## 
+##          CP nsplit rel error
+## 1 0.4791100      0 1.0000000
+## 2 0.1486832      1 0.5208900
+## 3 0.1200000      2 0.3722068
+## 
+## Variable importance
+##     Murder Illiteracy    HS.Grad      Frost       Area Population 
+##         34         17         14         13         11         10 
+## 
+## Node number 1: 50 observations,    complexity param=0.47911
+##   mean=70.8786, MSE=1.76598 
+##   left son=2 (27 obs) right son=3 (23 obs)
+##   Primary splits:
+##       Murder     < 6.55     to the right, improve=0.4791100, (0 missing)
+##       HS.Grad    < 44.3     to the left,  improve=0.4007892, (0 missing)
+##       Income     < 3891     to the left,  improve=0.3185349, (0 missing)
+##       Illiteracy < 1.35     to the right, improve=0.3150196, (0 missing)
+##       Frost      < 102      to the left,  improve=0.1559469, (0 missing)
+##   Surrogate splits:
+##       Illiteracy < 1.2      to the right, agree=0.76, adj=0.478, (0 split)
+##       HS.Grad    < 53.25    to the left,  agree=0.76, adj=0.478, (0 split)
+##       Frost      < 125.5    to the left,  agree=0.74, adj=0.435, (0 split)
+##       Population < 1671.5   to the right, agree=0.70, adj=0.348, (0 split)
+##       Area       < 9579     to the right, agree=0.70, adj=0.348, (0 split)
+## 
+## Node number 2: 27 observations,    complexity param=0.1486832
+##   mean=70.02963, MSE=0.989848 
+##   left son=4 (8 obs) right son=5 (19 obs)
+##   Primary splits:
+##       Murder     < 11.2     to the right, improve=0.4912307, (0 missing)
+##       HS.Grad    < 44.8     to the left,  improve=0.4129798, (0 missing)
+##       Income     < 4139.5   to the left,  improve=0.3715959, (0 missing)
+##       Illiteracy < 1.95     to the right, improve=0.3131356, (0 missing)
+##       Population < 6859     to the left,  improve=0.1953184, (0 missing)
+##   Surrogate splits:
+##       Illiteracy < 1.95     to the right, agree=0.889, adj=0.625, (0 split)
+##       HS.Grad    < 64.55    to the right, agree=0.778, adj=0.250, (0 split)
+##       Frost      < 62.5     to the left,  agree=0.778, adj=0.250, (0 split)
+##       Area       < 209247.5 to the right, agree=0.778, adj=0.250, (0 split)
+##       Population < 867      to the left,  agree=0.741, adj=0.125, (0 split)
+## 
+## Node number 3: 23 observations
+##   mean=71.87522, MSE=0.8377467 
+## 
+## Node number 4: 8 observations
+##   mean=68.955, MSE=0.734025 
+## 
+## Node number 5: 19 observations
+##   mean=70.48211, MSE=0.406585 
+## 
+## n= 50 
+## 
+## node), split, n, deviance, yval
+##       * denotes terminal node
+## 
+## 1) root 50 88.299000 70.87860  
+##   2) Murder>=6.55 27 26.725900 70.02963  
+##     4) Murder>=11.2 8  5.872200 68.95500 *
+##     5) Murder< 11.2 19  7.725116 70.48211 *
+##   3) Murder< 6.55 23 19.268170 71.87522 *
+##                  model_id model_method
+## 1 Excl.xy.X.cp.opt..rpart        rpart
+##                                                          feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
+## 1              50                      3.038                 0.008
+##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit
+## 1    0.6277932    0.9709231    0.6277932    0.8107464        0.5380553
+##   min.RMSESD.fit max.RsquaredSD.fit
+## 1      0.3042443          0.2994809
+```
+
+```r
+# Non-caret models
+    rpart_excl_xy_mdl <- rpart(reformulate(indep_vars_vctr, response=glb_rsp_var), 
+                               data=glb_trnent_df, #method="class", 
+                               control=rpart.control(cp=0.12))
+    print("rpart_excl_xy_mdl"); prp(rpart_excl_xy_mdl)
+```
+
+```
+## [1] "rpart_excl_xy_mdl"
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-42.png) 
+
+```r
+    # easier to include features
+model_id_pfx <- "Imp.4.X";
+indep_vars_vctr <- c("Population", "Murder", "Frost", "HS.Grad")
+for (method in "lm") {
+    print(sprintf("iterating over method:%s", method))
+    
+    ret_lst <- myfit_mdl(model_id=paste0(model_id_pfx, ""), model_method=method,
+                            indep_vars_vctr=indep_vars_vctr,
+                            model_type=glb_model_type,
+                            rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                            fit_df=glb_trnent_df, OOB_df=glb_newent_df,
+                n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
+}
+```
+
+```
+## [1] "iterating over method:lm"
+## [1] "fitting model: Imp.4.X.lm"
+## [1] "    indep_vars: Population, Murder, Frost, HS.Grad"
+## + Fold1: parameter=none 
+## - Fold1: parameter=none 
+## + Fold2: parameter=none 
+## - Fold2: parameter=none 
+## + Fold3: parameter=none 
+## - Fold3: parameter=none 
+## Aggregating results
+## Fitting final model on full training set
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-43.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-44.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-45.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-46.png) 
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.47095 -0.53464 -0.03701  0.57621  1.50683 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.103e+01  9.529e-01  74.542  < 2e-16 ***
+## Population   5.014e-05  2.512e-05   1.996  0.05201 .  
+## Murder      -3.001e-01  3.661e-02  -8.199 1.77e-10 ***
+## Frost       -5.943e-03  2.421e-03  -2.455  0.01802 *  
+## HS.Grad      4.658e-02  1.483e-02   3.142  0.00297 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.7197 on 45 degrees of freedom
+## Multiple R-squared:  0.736,	Adjusted R-squared:  0.7126 
+## F-statistic: 31.37 on 4 and 45 DF,  p-value: 1.696e-12
+## 
+##     model_id model_method                              feats
+## 1 Imp.4.X.lm           lm Population, Murder, Frost, HS.Grad
+##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
+## 1               1                      0.736                 0.003
+##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
+## 1    0.7360328    0.7842579    0.7360328    0.6827597         0.712569
+##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
+## 1        0.6595997      0.1797279          0.1316844
+```
+
+```r
+model_id_pfx <- "Area.X";
+indep_vars_vctr <- c("Area")
+for (method in "rpart") {
+    print(sprintf("iterating over method:%s", method))
+    ret_lst <- myfit_mdl(model_id=paste0(model_id_pfx, ""), model_method=method,
+                            indep_vars_vctr=indep_vars_vctr,
+                            model_type=glb_model_type,
+                            rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                            fit_df=glb_trnent_df, OOB_df=glb_newent_df,
+n_cv_folds=10, tune_models_df=data.frame(parameter="cp", min=0.01, max=0.50, by=0.01))                         
+}
+```
+
+```
+## [1] "iterating over method:rpart"
+## [1] "fitting model: Area.X.rpart"
+## [1] "    indep_vars: Area"
+## + Fold01: cp=0.01 
+## - Fold01: cp=0.01 
+## + Fold02: cp=0.01 
+## - Fold02: cp=0.01 
+## + Fold03: cp=0.01 
+## - Fold03: cp=0.01 
+## + Fold04: cp=0.01 
+## - Fold04: cp=0.01 
+## + Fold05: cp=0.01 
+## - Fold05: cp=0.01 
+## + Fold06: cp=0.01 
+## - Fold06: cp=0.01 
+## + Fold07: cp=0.01 
+## - Fold07: cp=0.01 
+## + Fold08: cp=0.01 
+## - Fold08: cp=0.01 
+## + Fold09: cp=0.01 
+## - Fold09: cp=0.01 
+## + Fold10: cp=0.01 
+## - Fold10: cp=0.01
+```
+
+```
+## Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info =
+## trainInfo, : There were missing values in resampled performance measures.
+```
+
+```
+## Aggregating results
+## Selecting tuning parameters
+## Fitting cp = 0.02 on full training set
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-47.png) ![](USCensus1977_State_HW4_files/figure-html/fit.models_0-48.png) 
+
+```
+## Call:
+## rpart(formula = .outcome ~ ., control = list(minsplit = 20, minbucket = 7, 
+##     cp = 0, maxcompete = 4, maxsurrogate = 5, usesurrogate = 2, 
+##     surrogatestyle = 0, maxdepth = 30, xval = 0))
+##   n= 50 
+## 
+##           CP nsplit rel error
+## 1 0.14566773      0 1.0000000
+## 2 0.06165287      3 0.5629968
+## 3 0.00000000      4 0.5013439
+## 
+## Variable importance
+## Area 
+##  100 
+## 
+## Node number 1: 50 observations,    complexity param=0.1456677
+##   mean=70.8786, MSE=1.76598 
+##   left son=2 (30 obs) right son=3 (20 obs)
+##   Primary splits:
+##       Area < 62321.5 to the left,  improve=0.1118817, (0 missing)
+## 
+## Node number 2: 30 observations,    complexity param=0.1456677
+##   mean=70.51567, MSE=1.753125 
+##   left son=4 (22 obs) right son=5 (8 obs)
+##   Primary splits:
+##       Area < 9579    to the right, improve=0.2952542, (0 missing)
+## 
+## Node number 3: 20 observations,    complexity param=0.1456677
+##   mean=71.423, MSE=1.291311 
+##   left son=6 (9 obs) right son=7 (11 obs)
+##   Primary splits:
+##       Area < 96693.5 to the right, improve=0.51031, (0 missing)
+## 
+## Node number 4: 22 observations,    complexity param=0.06165287
+##   mean=70.08182, MSE=1.331069 
+##   left son=8 (15 obs) right son=9 (7 obs)
+##   Primary splits:
+##       Area < 51326.5 to the left,  improve=0.1859027, (0 missing)
+## 
+## Node number 5: 8 observations
+##   mean=71.70875, MSE=0.9727109 
+## 
+## Node number 6: 9 observations
+##   mean=70.52556, MSE=0.8568247 
+## 
+## Node number 7: 11 observations
+##   mean=72.15727, MSE=0.4486744 
+## 
+## Node number 8: 15 observations
+##   mean=69.742, MSE=0.8206027 
+## 
+## Node number 9: 7 observations
+##   mean=70.81, MSE=1.647229 
+## 
+## n= 50 
+## 
+## node), split, n, deviance, yval
+##       * denotes terminal node
+## 
+## 1) root 50 88.299000 70.87860  
+##   2) Area< 62321.5 30 52.593740 70.51567  
+##     4) Area>=9579 22 29.283530 70.08182  
+##       8) Area< 51326.5 15 12.309040 69.74200 *
+##       9) Area>=51326.5 7 11.530600 70.81000 *
+##     5) Area< 9579 8  7.781687 71.70875 *
+##   3) Area>=62321.5 20 25.826220 71.42300  
+##     6) Area>=96693.5 9  7.711422 70.52556 *
+##     7) Area< 96693.5 11  4.935418 72.15727 *
+##       model_id model_method feats max.nTuningRuns
+## 1 Area.X.rpart        rpart  Area              50
+##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
+## 1                      2.465                 0.005    0.4986561
+##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit min.RMSESD.fit
+## 1     1.205723    0.4986561    0.9409375        0.5389506      0.4437874
+##   max.RsquaredSD.fit
+## 1          0.3188591
+```
+
+```r
+    rpart_area_mdl <- rpart(reformulate("Area", response=glb_rsp_var), 
+                               data=glb_trnent_df, #method="class", 
+                               control=rpart.control(cp=0.12))
+    print("rpart_excl_xy_mdl"); prp(rpart_excl_xy_mdl)
+```
+
+```
+## [1] "rpart_excl_xy_mdl"
+```
+
+![](USCensus1977_State_HW4_files/figure-html/fit.models_0-49.png) 
+
+```r
+    # User specified bivariate models
+#     indep_vars_vctr_lst <- list()
+#     for (feat in setdiff(names(glb_trnent_df), 
+#                          union(glb_rsp_var, glb_exclude_vars_as_features)))
+#         indep_vars_vctr_lst[["feat"]] <- feat
+
+    # User specified combinatorial models
+#     indep_vars_vctr_lst <- list()
+#     combn_mtrx <- combn(c("<feat1_name>", "<feat2_name>", "<featn_name>"), 
+#                           <num_feats_to_choose>)
+#     for (combn_ix in 1:ncol(combn_mtrx))
+#         #print(combn_mtrx[, combn_ix])
+#         indep_vars_vctr_lst[[combn_ix]] <- combn_mtrx[, combn_ix]
+
+    # rf is hard-coded in caret to recognize only Accuracy / Kappa evaluation metrics
+    #   only for OOB in trainControl ?
+
+    # template for myfit_mdl
+#     ret_lst <- myfit_mdl_fn(model_id=paste0(model_id_pfx, ""), model_method=method,
+#                             indep_vars_vctr=indep_vars_vctr,
+#                             rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+#                             fit_df=glb_trnent_df, OOB_df=glb_newent_df,
+#                             n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df,
+#                             model_loss_mtrx=glb_model_metric_terms,
+#                             model_summaryFunction=glb_model_metric_smmry,
+#                             model_metric=glb_model_metric,
+#                             model_metric_maximize=glb_model_metric_maximize)
+
 # Simplify a model
 # fit_df <- glb_trnent_df; glb_mdl <- step(<complex>_mdl)
+
+# Non-caret models
+#     glb_sel_mdl <- glb_sel_wlm_mdl <- ret_lst[["model"]]
+#     rpart_sel_wlm_mdl <- rpart(reformulate(indep_vars_vctr, response=glb_rsp_var), 
+#                                data=glb_trnent_df, method="class", 
+#                                control=rpart.control(cp=glb_sel_wlm_mdl$bestTune$cp),
+#                            parms=list(loss=glb_model_metric_terms))
+#     print("rpart_sel_wlm_mdl"); prp(rpart_sel_wlm_mdl)
+# 
 
 print(glb_models_df)
 ```
@@ -3037,62 +2958,87 @@ print(glb_models_df)
 ## 11          All.X.cp.0.rpart        rpart
 ## 12                  All.X.rf           rf
 ## 13         All.X.no.rnorm.rf           rf
-##                                                                                                                             feats
-## 1                                                                                                                          .rnorm
-## 2                                                                                                                          Murder
-## 3                                                                                                                          Murder
-## 4                                                                                                                          Murder
-## 5                                                                                                                          Murder
-## 6                                                                                Murder, Murder:y, Murder:Area, Murder:Illiteracy
-## 7                       HS.Grad, state.region.fctr, Income, Frost, state.division.fctr, .rnorm, Population, state.area, x, Murder
-## 8  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
-## 9  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
-## 10         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
-## 11         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
-## 12 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
-## 13         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
+## 14              Excl.xy.X.lm           lm
+## 15     Excl.xy.X.cp.0..rpart        rpart
+## 16   Excl.xy.X.cp.opt..rpart        rpart
+## 17                Imp.4.X.lm           lm
+## 18              Area.X.rpart        rpart
+##                                                                         feats
+## 1                                                                      .rnorm
+## 2                                                                      Murder
+## 3                                                                      Murder
+## 4                                                                      Murder
+## 5                                                                      Murder
+## 6                                         Murder, Murder:y, Murder:Illiteracy
+## 7                 HS.Grad, Income, Frost, .rnorm, Population, Area, x, Murder
+## 8  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
+## 9  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
+## 10         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
+## 11         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
+## 12 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
+## 13         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
+## 14       Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, .rnorm
+## 15               Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+## 16               Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+## 17                                         Population, Murder, Frost, HS.Grad
+## 18                                                                       Area
 ##    max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1                0                      0.617                 0.002
-## 2                0                      0.483                 0.007
-## 3                0                      0.429                 0.006
-## 4                3                      0.819                 0.006
-## 5                1                      0.721                 0.002
-## 6                1                      0.715                 0.002
-## 7                1                      0.727                 0.006
-## 8                1                      0.750                 0.007
-## 9                1                      0.761                 0.011
-## 10               3                      0.823                 0.014
-## 11               0                      0.468                 0.015
-## 12               3                      1.177                 0.086
-## 13               3                      0.824                 0.080
+## 1                0                      0.627                 0.003
+## 2                0                      0.471                 0.007
+## 3                0                      0.418                 0.005
+## 4                3                      0.800                 0.007
+## 5                1                      0.706                 0.002
+## 6                1                      0.917                 0.003
+## 7                1                      0.928                 0.003
+## 8                1                      0.710                 0.004
+## 9                1                      0.732                 0.007
+## 10               3                      0.786                 0.010
+## 11               0                      0.454                 0.008
+## 12               3                      1.075                 0.064
+## 13               3                      0.940                 0.037
+## 14               1                      0.736                 0.004
+## 15               0                      0.461                 0.007
+## 16              50                      3.038                 0.008
+## 17               1                      0.736                 0.003
+## 18              50                      2.465                 0.005
 ##    max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
 ## 1   0.002331715    1.3273516   -0.0197079    1.3419329      -0.01845304
 ## 2   0.000000000    1.3289018    0.0000000    1.3289018               NA
 ## 3   0.671587719    0.7615573    0.6715877    0.7615573               NA
-## 4   0.627793192    1.0483158    0.6277932    0.8107464               NA
-## 5   0.609720089    0.8553751    0.6097201    0.8301967       0.60158926
-## 6   0.661420134    0.9644864    0.6614201    0.7732563       0.63132415
-## 7   0.828818223    0.7679484    0.8248221    0.5562021       0.74582100
-## 8   0.850149179    0.9978482    0.8471627    0.5195263       0.75524366
-## 9   0.850149179    0.9978482    0.8471627    0.5195263               NA
-## 10  0.627793192    1.0873126    0.6277932    0.8107464               NA
+## 4   0.479109965    1.0398286    0.4791100    0.9591045               NA
+## 5   0.609720089    0.8320957    0.6097201    0.8301967       0.60158926
+## 6   0.636906500    0.8436601    0.6369065    0.8007596       0.61322649
+## 7   0.767082328    1.0842757    0.7662855    0.6424446       0.72163498
+## 8   0.791994171    1.2618881    0.7913361    0.6070389       0.73865934
+## 9   0.791994171    1.2618881    0.7913361    0.6070389               NA
+## 10  0.479109965    1.0398286    0.4791100    0.9591045               NA
 ## 11  0.701892423    0.7255701    0.7018924    0.7255701               NA
-## 12  0.919351922    0.9136977    0.9122315    0.3936973               NA
-## 13  0.919450449    0.8911010    0.9194504    0.3771624               NA
+## 12  0.924033485    0.9176627    0.9151455    0.3871071               NA
+## 13  0.903835274    0.9057207    0.9038353    0.4121016               NA
+## 14  0.740009310    0.8718015    0.7331847    0.6864332       0.68927942
+## 15  0.671587719    0.7615573    0.6715877    0.7615573               NA
+## 16  0.627793192    0.9709231    0.6277932    0.8107464               NA
+## 17  0.736032772    0.7842579    0.7360328    0.6827597       0.71256902
+## 18  0.498656079    1.2057226    0.4986561    0.9409375               NA
 ##    max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit min.aic.fit
 ## 1                NA             NA                 NA          NA
 ## 2                NA             NA                 NA          NA
 ## 3                NA             NA                 NA          NA
-## 4         0.4087926     0.08998812         0.17411417          NA
-## 5         0.6279054     0.16653016         0.10273774          NA
-## 6         0.5180279     0.13521150         0.05523021          NA
-## 7         0.7129405     0.12536897         0.07850497          NA
-## 8         0.5547110     0.13375082         0.07368833          NA
-## 9         0.5547110     0.13375082         0.07368833    117.4234
-## 10        0.3705278     0.10113275         0.10877585          NA
+## 4         0.4395211      0.2490712          0.2652752          NA
+## 5         0.6384208      0.3047336          0.2649220          NA
+## 6         0.6419329      0.2626833          0.2591354          NA
+## 7         0.5831535      0.3656232          0.1273796          NA
+## 8         0.5779784      0.7360377          0.1636766          NA
+## 9         0.5779784      0.7360377          0.1636766    115.8197
+## 10        0.4395211      0.2490712          0.2652752          NA
 ## 11               NA             NA                 NA          NA
-## 12        0.5272634             NA                 NA          NA
-## 13        0.5503567             NA                 NA          NA
+## 12        0.5231516             NA                 NA          NA
+## 13        0.5354817             NA                 NA          NA
+## 14        0.5965373      0.1800150          0.1589779          NA
+## 15               NA             NA                 NA          NA
+## 16        0.5380553      0.3042443          0.2994809          NA
+## 17        0.6595997      0.1797279          0.1316844          NA
+## 18        0.5389506      0.4437874          0.3188591          NA
 ```
 
 ```r
@@ -3106,8 +3052,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##          chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed8  fit.models                5                0   5.233
-## elapsed9  fit.models                5                1  32.337
+## elapsed8  fit.models                5                0   4.856
+## elapsed9  fit.models                5                1  46.815
 ```
 
 
@@ -3178,62 +3124,87 @@ print(plt_models_df)
 ## 11          All.X.cp.0.rpart        rpart
 ## 12                  All.X.rf           rf
 ## 13         All.X.no.rnorm.rf           rf
-##                                                                                                                             feats
-## 1                                                                                                                          .rnorm
-## 2                                                                                                                          Murder
-## 3                                                                                                                          Murder
-## 4                                                                                                                          Murder
-## 5                                                                                                                          Murder
-## 6                                                                                Murder, Murder:y, Murder:Area, Murder:Illiteracy
-## 7                       HS.Grad, state.region.fctr, Income, Frost, state.division.fctr, .rnorm, Population, state.area, x, Murder
-## 8  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
-## 9  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
-## 10         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
-## 11         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
-## 12 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr, .rnorm
-## 13         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, state.area, x, y, state.division.fctr, state.region.fctr
+## 14              Excl.xy.X.lm           lm
+## 15     Excl.xy.X.cp.0..rpart        rpart
+## 16   Excl.xy.X.cp.opt..rpart        rpart
+## 17                Imp.4.X.lm           lm
+## 18              Area.X.rpart        rpart
+##                                                                         feats
+## 1                                                                      .rnorm
+## 2                                                                      Murder
+## 3                                                                      Murder
+## 4                                                                      Murder
+## 5                                                                      Murder
+## 6                                         Murder, Murder:y, Murder:Illiteracy
+## 7                 HS.Grad, Income, Frost, .rnorm, Population, Area, x, Murder
+## 8  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
+## 9  Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
+## 10         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
+## 11         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
+## 12 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y, .rnorm
+## 13         Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, x, y
+## 14       Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area, .rnorm
+## 15               Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+## 16               Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+## 17                                         Population, Murder, Frost, HS.Grad
+## 18                                                                       Area
 ##    max.nTuningRuns max.R.sq.fit max.R.sq.OOB max.Adj.R.sq.fit
 ## 1                0  0.002331715   -0.0197079      -0.01845304
 ## 2                0  0.000000000    0.0000000               NA
 ## 3                0  0.671587719    0.6715877               NA
-## 4                3  0.627793192    0.6277932               NA
+## 4                3  0.479109965    0.4791100               NA
 ## 5                1  0.609720089    0.6097201       0.60158926
-## 6                1  0.661420134    0.6614201       0.63132415
-## 7                1  0.828818223    0.8248221       0.74582100
-## 8                1  0.850149179    0.8471627       0.75524366
-## 9                1  0.850149179    0.8471627               NA
-## 10               3  0.627793192    0.6277932               NA
+## 6                1  0.636906500    0.6369065       0.61322649
+## 7                1  0.767082328    0.7662855       0.72163498
+## 8                1  0.791994171    0.7913361       0.73865934
+## 9                1  0.791994171    0.7913361               NA
+## 10               3  0.479109965    0.4791100               NA
 ## 11               0  0.701892423    0.7018924               NA
-## 12               3  0.919351922    0.9122315               NA
-## 13               3  0.919450449    0.9194504               NA
+## 12               3  0.924033485    0.9151455               NA
+## 13               3  0.903835274    0.9038353               NA
+## 14               1  0.740009310    0.7331847       0.68927942
+## 15               0  0.671587719    0.6715877               NA
+## 16              50  0.627793192    0.6277932               NA
+## 17               1  0.736032772    0.7360328       0.71256902
+## 18              50  0.498656079    0.4986561               NA
 ##    max.Rsquared.fit inv.elapsedtime.everything inv.elapsedtime.final
-## 1                NA                  1.6207455             500.00000
-## 2                NA                  2.0703934             142.85714
-## 3                NA                  2.3310023             166.66667
-## 4         0.4087926                  1.2210012             166.66667
-## 5         0.6279054                  1.3869626             500.00000
-## 6         0.5180279                  1.3986014             500.00000
-## 7         0.7129405                  1.3755158             166.66667
-## 8         0.5547110                  1.3333333             142.85714
-## 9         0.5547110                  1.3140604              90.90909
-## 10        0.3705278                  1.2150668              71.42857
-## 11               NA                  2.1367521              66.66667
-## 12        0.5272634                  0.8496177              11.62791
-## 13        0.5503567                  1.2135922              12.50000
+## 1                NA                  1.5948963             333.33333
+## 2                NA                  2.1231423             142.85714
+## 3                NA                  2.3923445             200.00000
+## 4         0.4395211                  1.2500000             142.85714
+## 5         0.6384208                  1.4164306             500.00000
+## 6         0.6419329                  1.0905125             333.33333
+## 7         0.5831535                  1.0775862             333.33333
+## 8         0.5779784                  1.4084507             250.00000
+## 9         0.5779784                  1.3661202             142.85714
+## 10        0.4395211                  1.2722646             100.00000
+## 11               NA                  2.2026432             125.00000
+## 12        0.5231516                  0.9302326              15.62500
+## 13        0.5354817                  1.0638298              27.02703
+## 14        0.5965373                  1.3586957             250.00000
+## 15               NA                  2.1691974             142.85714
+## 16        0.5380553                  0.3291639             125.00000
+## 17        0.6595997                  1.3586957             333.33333
+## 18        0.5389506                  0.4056795             200.00000
 ##    inv.RMSE.fit inv.RMSE.OOB inv.aic.fit
 ## 1     0.7533799    0.7451938          NA
 ## 2     0.7525010    0.7525010          NA
 ## 3     1.3130988    1.3130988          NA
-## 4     0.9539110    1.2334313          NA
-## 5     1.1690778    1.2045338          NA
-## 6     1.0368213    1.2932323          NA
-## 7     1.3021708    1.7979078          NA
-## 8     1.0021565    1.9248305          NA
-## 9     1.0021565    1.9248305 0.008516191
-## 10    0.9196987    1.2334313          NA
+## 4     0.9616969    1.0426393          NA
+## 5     1.2017848    1.2045338          NA
+## 6     1.1853115    1.2488143          NA
+## 7     0.9222747    1.5565544          NA
+## 8     0.7924633    1.6473410          NA
+## 9     0.7924633    1.6473410 0.008634111
+## 10    0.9616969    1.0426393          NA
 ## 11    1.3782265    1.3782265          NA
-## 12    1.0944539    2.5400222          NA
-## 13    1.1222072    2.6513775          NA
+## 12    1.0897250    2.5832642          NA
+## 13    1.1040931    2.4265858          NA
+## 14    1.1470501    1.4568060          NA
+## 15    1.3130988    1.3130988          NA
+## 16    1.0299477    1.2334313          NA
+## 17    1.2750907    1.4646441          NA
+## 18    0.8293782    1.0627699          NA
 ```
 
 ```r
@@ -3248,7 +3219,7 @@ print(myplot_radar(radar_inp_df=plt_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 13. Consider specifying shapes manually. if you must have them.
+## 18. Consider specifying shapes manually. if you must have them.
 ```
 
 ```
@@ -3256,11 +3227,11 @@ print(myplot_radar(radar_inp_df=plt_models_df))
 ```
 
 ```
-## Warning: Removed 81 rows containing missing values (geom_point).
+## Warning: Removed 131 rows containing missing values (geom_point).
 ```
 
 ```
-## Warning: Removed 24 rows containing missing values (geom_text).
+## Warning: Removed 33 rows containing missing values (geom_text).
 ```
 
 ```
@@ -3271,7 +3242,7 @@ print(myplot_radar(radar_inp_df=plt_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 13. Consider specifying shapes manually. if you must have them.
+## 18. Consider specifying shapes manually. if you must have them.
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.models_1-1.png) 
@@ -3379,14 +3350,8 @@ if (length(goback_vars) > 0) {
 
 mltd_models_df <- merge(mltd_models_df, glb_models_df[, c("model_id", "model_method")], all.x=TRUE)
 
-# print(myplot_bar(mltd_models_df, "model_id", "value", colorcol_name="data") + 
-#         geom_errorbar(data=mrgdCI_models_df, 
-#             mapping=aes(x=model_id, ymax=value.Upper, ymin=value.Lower), width=0.5) + 
-#           facet_grid(label ~ data, scales="free") + 
-#           theme(axis.text.x = element_text(angle = 45,vjust = 1)))
-# mltd_models_df <- orderBy(~ value +variable +data +label + model_method + model_id, 
-#                           mltd_models_df)
-print(myplot_bar(mltd_models_df, "model_id", "value", colorcol_name="model_method") + 
+png(paste0(glb_out_pfx, "models_bar.png"), width=480*3, height=480*2)
+print(gp <- myplot_bar(mltd_models_df, "model_id", "value", colorcol_name="model_method") + 
         geom_errorbar(data=mrgdCI_models_df, 
             mapping=aes(x=model_id, ymax=value.Upper, ymin=value.Lower), width=0.5) + 
           facet_grid(label ~ data, scales="free") + 
@@ -3394,33 +3359,56 @@ print(myplot_bar(mltd_models_df, "model_id", "value", colorcol_name="model_metho
 ```
 
 ```
-## Warning: Removed 4 rows containing missing values (position_stack).
+## Warning: Removed 5 rows containing missing values (position_stack).
+```
+
+```r
+dev.off()
+```
+
+```
+## quartz_off_screen 
+##                 2
+```
+
+```r
+print(gp)
+```
+
+```
+## Warning: Removed 5 rows containing missing values (position_stack).
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.models_1-2.png) 
 
 ```r
+# used for console inspection
 model_evl_terms <- c(NULL)
 for (metric in glb_model_evl_criteria)
     model_evl_terms <- c(model_evl_terms, 
-                    ifelse(length(grep("max", metric)) > 0, "-", "+"), metric)
+                         ifelse(length(grep("max", metric)) > 0, "-", "+"), metric)
 model_sel_frmla <- as.formula(paste(c("~ ", model_evl_terms), collapse=" "))
 print(tmp_models_df <- orderBy(model_sel_frmla, glb_models_df)[, c("model_id", glb_model_evl_criteria)])
 ```
 
 ```
 ##                     model_id min.RMSE.OOB max.R.sq.OOB max.Adj.R.sq.fit
-## 13         All.X.no.rnorm.rf    0.3771624    0.9194504               NA
-## 12                  All.X.rf    0.3936973    0.9122315               NA
-## 8                   All.X.lm    0.5195263    0.8471627       0.75524366
-## 9                  All.X.glm    0.5195263    0.8471627               NA
-## 7               Low.cor.X.lm    0.5562021    0.8248221       0.74582100
+## 12                  All.X.rf    0.3871071    0.9151455               NA
+## 13         All.X.no.rnorm.rf    0.4121016    0.9038353               NA
+## 8                   All.X.lm    0.6070389    0.7913361       0.73865934
+## 9                  All.X.glm    0.6070389    0.7913361               NA
+## 7               Low.cor.X.lm    0.6424446    0.7662855       0.72163498
+## 17                Imp.4.X.lm    0.6827597    0.7360328       0.71256902
+## 14              Excl.xy.X.lm    0.6864332    0.7331847       0.68927942
 ## 11          All.X.cp.0.rpart    0.7255701    0.7018924               NA
 ## 3  Max.cor.Y.cv.0.cp.0.rpart    0.7615573    0.6715877               NA
-## 6     Interact.High.cor.y.lm    0.7732563    0.6614201       0.63132415
-## 4            Max.cor.Y.rpart    0.8107464    0.6277932               NA
-## 10               All.X.rpart    0.8107464    0.6277932               NA
+## 15     Excl.xy.X.cp.0..rpart    0.7615573    0.6715877               NA
+## 6     Interact.High.cor.y.lm    0.8007596    0.6369065       0.61322649
+## 16   Excl.xy.X.cp.opt..rpart    0.8107464    0.6277932               NA
 ## 5               Max.cor.Y.lm    0.8301967    0.6097201       0.60158926
+## 18              Area.X.rpart    0.9409375    0.4986561               NA
+## 4            Max.cor.Y.rpart    0.9591045    0.4791100               NA
+## 10               All.X.rpart    0.9591045    0.4791100               NA
 ## 2       Max.cor.Y.cv.0.rpart    1.3289018    0.0000000               NA
 ## 1                     MFO.lm    1.3419329   -0.0197079      -0.01845304
 ```
@@ -3437,19 +3425,19 @@ print(myplot_radar(radar_inp_df=tmp_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 13. Consider specifying shapes manually. if you must have them.
+## 18. Consider specifying shapes manually. if you must have them.
 ```
 
 ```
-## Warning: Removed 6 rows containing missing values (geom_path).
+## Warning: Removed 8 rows containing missing values (geom_path).
 ```
 
 ```
-## Warning: Removed 30 rows containing missing values (geom_point).
+## Warning: Removed 47 rows containing missing values (geom_point).
 ```
 
 ```
-## Warning: Removed 8 rows containing missing values (geom_text).
+## Warning: Removed 11 rows containing missing values (geom_text).
 ```
 
 ```
@@ -3460,7 +3448,7 @@ print(myplot_radar(radar_inp_df=tmp_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 13. Consider specifying shapes manually. if you must have them.
+## 18. Consider specifying shapes manually. if you must have them.
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.models_1-3.png) 
@@ -3482,7 +3470,7 @@ print(sprintf("Best model id: %s", tmp_models_df[1, "model_id"]))
 ```
 
 ```
-## [1] "Best model id: All.X.no.rnorm.rf"
+## [1] "Best model id: All.X.rf"
 ```
 
 ```r
@@ -3503,7 +3491,7 @@ myprint_mdl(glb_sel_mdl <- glb_models_lst[[glb_sel_mdl_id]])
 ## mse             500    -none-     numeric  
 ## rsq             500    -none-     numeric  
 ## oob.times        50    -none-     numeric  
-## importance       21    -none-     numeric  
+## importance       10    -none-     numeric  
 ## importanceSD      0    -none-     NULL     
 ## localImportance   0    -none-     NULL     
 ## proximity         0    -none-     NULL     
@@ -3514,7 +3502,7 @@ myprint_mdl(glb_sel_mdl <- glb_models_lst[[glb_sel_mdl_id]])
 ## y                50    -none-     numeric  
 ## test              0    -none-     NULL     
 ## inbag             0    -none-     NULL     
-## xNames           21    -none-     character
+## xNames           10    -none-     character
 ## problemType       1    -none-     character
 ## tuneValue         1    data.frame list     
 ## obsLevels         1    -none-     logical
@@ -3553,8 +3541,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##                     chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed9             fit.models                5                1  32.337
-## elapsed10 fit.data.training.all                6                0  39.180
+## elapsed9             fit.models                5                1  46.815
+## elapsed10 fit.data.training.all                6                0  57.490
 ```
 
 ## Step `6`: fit.data.training.all
@@ -3588,36 +3576,28 @@ if (!is.null(glb_fin_mdl_id) && (glb_fin_mdl_id %in% names(glb_models_lst))) {
 ```
 
 ```
-##                                      id importance
-## Murder                           Murder 100.000000
-## HS.Grad                         HS.Grad  39.675598
-## Illiteracy                   Illiteracy  25.511731
-## Income                           Income  14.693130
-## x                                     x  14.004421
-## y                                     y   9.199612
-## Population                   Population   8.571232
-## Frost                             Frost   8.299797
-## state.area                   state.area   7.138794
-## Area                               Area   6.465033
-## state.division.fctr state.division.fctr   3.729238
-## state.region.fctr     state.region.fctr   1.756183
+##            importance         id fit.feat
+## Murder     100.000000     Murder     TRUE
+## HS.Grad     40.289971    HS.Grad     TRUE
+## Illiteracy  17.851797 Illiteracy     TRUE
+## x           13.913356          x     TRUE
+## Income      13.849496     Income     TRUE
+## Population   9.779550 Population     TRUE
+## y            9.125939          y     TRUE
+## Area         8.055817       Area     TRUE
+## Frost        7.562218      Frost     TRUE
+## .rnorm       4.619481     .rnorm     TRUE
 ## [1] "fitting model: Final.rf"
-## [1] "    indep_vars: Murder, HS.Grad, Illiteracy, Income, x, y, Population, Frost, state.area, Area, state.division.fctr, state.region.fctr"
+## [1] "    indep_vars: Murder, HS.Grad, Illiteracy, x, Income, Population, y, Area, Frost, .rnorm"
 ## + : mtry= 2 
 ## - : mtry= 2 
-## + : mtry=11 
-## - : mtry=11 
-## + : mtry=21 
-## - : mtry=21 
+## + : mtry= 6 
+## - : mtry= 6 
+## + : mtry=10 
+## - : mtry=10 
 ## Aggregating results
 ## Selecting tuning parameters
-## Fitting mtry = 21 on full training set
-```
-
-```
-## Warning in myfit_mdl(model_id = "Final", model_method = model_method,
-## indep_vars_vctr = mdl_feats_df$id, : model's bestTune found at an extreme
-## of tuneGrid for parameter: mtry
+## Fitting mtry = 6 on full training set
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_0-1.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_0-2.png) 
@@ -3630,7 +3610,7 @@ if (!is.null(glb_fin_mdl_id) && (glb_fin_mdl_id %in% names(glb_models_lst))) {
 ## mse             500    -none-     numeric  
 ## rsq             500    -none-     numeric  
 ## oob.times        50    -none-     numeric  
-## importance       21    -none-     numeric  
+## importance       10    -none-     numeric  
 ## importanceSD      0    -none-     NULL     
 ## localImportance   0    -none-     NULL     
 ## proximity         0    -none-     NULL     
@@ -3641,18 +3621,18 @@ if (!is.null(glb_fin_mdl_id) && (glb_fin_mdl_id %in% names(glb_models_lst))) {
 ## y                50    -none-     numeric  
 ## test              0    -none-     NULL     
 ## inbag             0    -none-     NULL     
-## xNames           21    -none-     character
+## xNames           10    -none-     character
 ## problemType       1    -none-     character
 ## tuneValue         1    data.frame list     
 ## obsLevels         1    -none-     logical  
 ##   model_id model_method
 ## 1 Final.rf           rf
-##                                                                                                                    feats
-## 1 Murder, HS.Grad, Illiteracy, Income, x, y, Population, Frost, state.area, Area, state.division.fctr, state.region.fctr
+##                                                                        feats
+## 1 Murder, HS.Grad, Illiteracy, x, Income, Population, y, Area, Frost, .rnorm
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               3                      0.879                 0.126
+## 1               3                      1.019                 0.064
 ##   max.R.sq.fit min.RMSE.fit max.Rsquared.fit
-## 1    0.9256304    0.8893656        0.5521064
+## 1    0.9219111    0.9077502        0.5333977
 ```
 
 ```r
@@ -3666,8 +3646,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##                     chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed10 fit.data.training.all                6                0  39.180
-## elapsed11 fit.data.training.all                6                1  42.201
+## elapsed10 fit.data.training.all                6                0  57.490
+## elapsed11 fit.data.training.all                6                1  61.469
 ```
 
 
@@ -3689,10 +3669,11 @@ glb_get_predictions <- function(df) {
     if (glb_is_classification && glb_is_binomial) {
         # incorporate glb_clf_proba_threshold
         #   shd it only be for glb_fin_mdl or for earlier models ?
-        if ((prob_threshold <- 
-                glb_models_df[glb_models_df$model_id == glb_fin_mdl_id, "opt.prob.threshold.fit"]) != 
+        if (glb_models_df[glb_models_df$model_id == glb_fin_mdl_id, "opt.prob.threshold.fit"] != 
             glb_models_df[glb_models_df$model_id == glb_sel_mdl_id, "opt.prob.threshold.fit"])
             stop("user specification for probability threshold required")
+        else prob_threshold <- 
+    glb_models_df[glb_models_df$model_id == glb_fin_mdl_id, "opt.prob.threshold.OOB"]
         
         df[, paste0(glb_rsp_var_out, ".prob")] <- 
             predict(glb_fin_mdl, newdata=df, type="prob")[, 2]
@@ -3722,32 +3703,32 @@ glb_trnent_df <- glb_get_predictions(glb_trnent_df)
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
-## 43      12237   4188        2.2    70.90   12.2    47.4    35 262134
-## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 19       1058   3694        0.7    70.39    2.7    54.7   161  30920
+## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 6        2541   4884        0.7    72.06    6.8    63.9   166 103766
+## 40       2816   3635        2.3    67.96   11.6    37.8    65  30225
+## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
 ## 26        746   4347        0.6    70.56    5.0    59.2   155 145587
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 43        TX     267339  -98.7857 31.3897 West South Central      Texas
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 19        ME      33215  -68.9801 45.6226        New England      Maine
-## 6         CO     104247 -105.5130 38.6777           Mountain   Colorado
-## 26        MT     147138 -109.3200 46.8230           Mountain    Montana
-##    state.region state.division.fctr state.region.fctr     .rnorm
-## 11         West             Pacific              West -1.0493528
-## 43        South  West South Central             South  0.1410843
-## 8         South      South Atlantic             South -1.2956717
-## 19    Northeast         New England         Northeast  0.6453831
-## 6          West            Mountain              West  1.5934885
-## 26         West            Mountain              West -0.3079534
-##    Life.Exp.predict.Final.rf Life.Exp.predict.Final.rf.err
-## 11                  72.55698                     1.0430193
-## 43                  70.15545                     0.7445467
-## 8                   70.71212                     0.6521197
-## 19                  70.99412                     0.6041163
-## 6                   71.47361                     0.5863867
-## 26                  71.13903                     0.5790330
+##    state.abb state.area         x       y state.division     state.name
+## 11        HI       6450 -126.2500 31.7500        Pacific         Hawaii
+## 28        NV     110540 -116.8510 39.1063       Mountain         Nevada
+## 6         CO     104247 -105.5130 38.6777       Mountain       Colorado
+## 40        SC      31055  -80.5056 33.6190 South Atlantic South Carolina
+## 8         DE       2057  -74.9841 38.6777 South Atlantic       Delaware
+## 26        MT     147138 -109.3200 46.8230       Mountain        Montana
+##    state.region     .rnorm Life.Exp.predict.Final.rf
+## 11         West -1.0493528                  72.50644
+## 28         West  0.8248701                  69.76368
+## 6          West  1.5934885                  71.39975
+## 40        South -1.1562233                  68.58484
+## 8         South -1.2956717                  70.64891
+## 26         West -0.3079534                  71.14370
+##    Life.Exp.predict.Final.rf.err
+## 11                     1.0935600
+## 28                     0.7336800
+## 6                      0.6602510
+## 40                     0.6248437
+## 8                      0.5889147
+## 26                     0.5836993
 ```
 
 ```r
@@ -3756,34 +3737,18 @@ print(glb_feats_df <- mymerge_feats_importance(feats_df=glb_feats_df, sel_mdl=gl
 ```
 
 ```
-##                     id       cor.y exclude.as.feat  cor.y.abs cor.low
-## 7               Murder -0.78084575               0 0.78084575       1
-## 4              HS.Grad  0.58221620               0 0.58221620       1
-## 12                   x -0.24798347               0 0.24798347       1
-## 5           Illiteracy -0.58847793               0 0.58847793       0
-## 6               Income  0.34025534               0 0.34025534       1
-## 8           Population -0.06805195               0 0.06805195       1
-## 3                Frost  0.26206801               0 0.26206801       1
-## 9           state.area -0.10963169               0 0.10963169       1
-## 13                   y  0.40665458               0 0.40665458       0
-## 2                 Area -0.10733194               0 0.10733194       0
-## 10 state.division.fctr  0.19443418               0 0.19443418       1
-## 11   state.region.fctr  0.56519612               0 0.56519612       1
-## 1               .rnorm -0.04828783               0 0.04828783       1
-##     importance
-## 7  100.0000000
-## 4   23.0440809
-## 12   8.4350326
-## 5    7.8261074
-## 6    6.3098011
-## 8    5.6596109
-## 3    3.5855582
-## 9    3.0366432
-## 13   2.8615375
-## 2    2.4883818
-## 10   1.1764385
-## 11   0.7336526
-## 1           NA
+##            id       cor.y exclude.as.feat  cor.y.abs cor.low importance
+## 7      Murder -0.78084575               0 0.78084575       1 100.000000
+## 4     HS.Grad  0.58221620               0 0.58221620       1  35.649279
+## 5  Illiteracy -0.58847793               0 0.58847793       0  22.392070
+## 6      Income  0.34025534               0 0.34025534       1  14.589273
+## 10          x -0.24798347               0 0.24798347       1  13.975075
+## 2        Area -0.10733194               0 0.10733194       1   9.376642
+## 8  Population -0.06805195               0 0.06805195       1   9.171128
+## 3       Frost  0.26206801               0 0.26206801       1   7.354350
+## 11          y  0.40665458               0 0.40665458       0   7.296889
+## 1      .rnorm -0.04828783               0 0.04828783       1   4.414972
+## 9  state.area -0.10963169               1 0.10963169       0         NA
 ```
 
 ```r
@@ -3834,36 +3799,36 @@ glb_analytics_diag_plots <- function(obs_df) {
 glb_analytics_diag_plots(obs_df=glb_trnent_df)
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-2.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-3.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-4.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-5.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-6.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-7.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-8.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-9.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-10.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-11.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-12.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-13.png) 
+![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-2.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-3.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-4.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-5.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-6.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-7.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-8.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-9.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-10.png) ![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-11.png) 
 
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
-## 43      12237   4188        2.2    70.90   12.2    47.4    35 262134
-## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 19       1058   3694        0.7    70.39    2.7    54.7   161  30920
+## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 6        2541   4884        0.7    72.06    6.8    63.9   166 103766
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 43        TX     267339  -98.7857 31.3897 West South Central      Texas
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 19        ME      33215  -68.9801 45.6226        New England      Maine
-## 6         CO     104247 -105.5130 38.6777           Mountain   Colorado
-##    state.region state.division.fctr state.region.fctr     .rnorm
-## 11         West             Pacific              West -1.0493528
-## 43        South  West South Central             South  0.1410843
-## 8         South      South Atlantic             South -1.2956717
-## 19    Northeast         New England         Northeast  0.6453831
-## 6          West            Mountain              West  1.5934885
-##    Life.Exp.predict.Final.rf Life.Exp.predict.Final.rf.err .label
-## 11                  72.55698                     1.0430193     HI
-## 43                  70.15545                     0.7445467     TX
-## 8                   70.71212                     0.6521197     DE
-## 19                  70.99412                     0.6041163     ME
-## 6                   71.47361                     0.5863867     CO
+## 40       2816   3635        2.3    67.96   11.6    37.8    65  30225
+## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
+##    state.abb state.area         x       y state.division     state.name
+## 11        HI       6450 -126.2500 31.7500        Pacific         Hawaii
+## 28        NV     110540 -116.8510 39.1063       Mountain         Nevada
+## 6         CO     104247 -105.5130 38.6777       Mountain       Colorado
+## 40        SC      31055  -80.5056 33.6190 South Atlantic South Carolina
+## 8         DE       2057  -74.9841 38.6777 South Atlantic       Delaware
+##    state.region     .rnorm Life.Exp.predict.Final.rf
+## 11         West -1.0493528                  72.50644
+## 28         West  0.8248701                  69.76368
+## 6          West  1.5934885                  71.39975
+## 40        South -1.1562233                  68.58484
+## 8         South -1.2956717                  70.64891
+##    Life.Exp.predict.Final.rf.err .label
+## 11                     1.0935600     HI
+## 28                     0.7336800     NV
+## 6                      0.6602510     CO
+## 40                     0.6248437     SC
+## 8                      0.5889147     DE
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-14.png) 
+![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-12.png) 
 
 ```r
 replay.petrisim(pn=glb_analytics_pn, 
@@ -3885,7 +3850,7 @@ replay.petrisim(pn=glb_analytics_pn,
 ## 5.0000 	 4 	 0 0 2 1
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-15.png) 
+![](USCensus1977_State_HW4_files/figure-html/fit.data.training.all_1-13.png) 
 
 ```r
 glb_script_df <- rbind(glb_script_df, 
@@ -3898,8 +3863,8 @@ print(tail(glb_script_df, 2))
 
 ```
 ##                     chunk_label chunk_step_major chunk_step_minor elapsed
-## elapsed11 fit.data.training.all                6                1  42.201
-## elapsed12      predict.data.new                7                0  48.366
+## elapsed11 fit.data.training.all                6                1  61.469
+## elapsed12      predict.data.new                7                0  67.388
 ```
 
 ## Step `7`: predict data.new
@@ -3918,68 +3883,68 @@ glb_newent_df <- glb_get_predictions(glb_newent_df)
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
-## 43      12237   4188        2.2    70.90   12.2    47.4    35 262134
+## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 19       1058   3694        0.7    70.39    2.7    54.7   161  30920
 ## 6        2541   4884        0.7    72.06    6.8    63.9   166 103766
+## 40       2816   3635        2.3    67.96   11.6    37.8    65  30225
 ## 26        746   4347        0.6    70.56    5.0    59.2   155 145587
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 43        TX     267339  -98.7857 31.3897 West South Central      Texas
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 19        ME      33215  -68.9801 45.6226        New England      Maine
-## 6         CO     104247 -105.5130 38.6777           Mountain   Colorado
-## 26        MT     147138 -109.3200 46.8230           Mountain    Montana
-##    state.region state.division.fctr state.region.fctr      .rnorm
-## 11         West             Pacific              West  0.32215158
-## 43        South  West South Central             South -0.10862424
-## 8         South      South Atlantic             South -0.06901731
-## 19    Northeast         New England         Northeast  1.64219199
-## 6          West            Mountain              West  0.62886063
-## 26         West            Mountain              West  0.66892165
-##    Life.Exp.predict.Final.rf Life.Exp.predict.Final.rf.err
-## 11                  72.55698                     1.0430193
-## 43                  70.15545                     0.7445467
-## 8                   70.71212                     0.6521197
-## 19                  70.99412                     0.6041163
-## 6                   71.47361                     0.5863867
-## 26                  71.13903                     0.5790330
+##    state.abb state.area         x       y state.division     state.name
+## 11        HI       6450 -126.2500 31.7500        Pacific         Hawaii
+## 28        NV     110540 -116.8510 39.1063       Mountain         Nevada
+## 8         DE       2057  -74.9841 38.6777 South Atlantic       Delaware
+## 6         CO     104247 -105.5130 38.6777       Mountain       Colorado
+## 40        SC      31055  -80.5056 33.6190 South Atlantic South Carolina
+## 26        MT     147138 -109.3200 46.8230       Mountain        Montana
+##    state.region      .rnorm Life.Exp.predict.Final.rf
+## 11         West  0.32215158                  72.42603
+## 28         West -0.42257687                  69.77368
+## 8         South -0.06901731                  70.74923
+## 6          West  0.62886063                  71.37722
+## 40        South  0.54839792                  68.60615
+## 26         West  0.66892165                  71.18499
+##    Life.Exp.predict.Final.rf.err
+## 11                     1.1739723
+## 28                     0.7436837
+## 8                      0.6892330
+## 6                      0.6827823
+## 40                     0.6461463
+## 26                     0.6249920
 ```
 
 ```r
 glb_analytics_diag_plots(obs_df=glb_newent_df)
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/predict.data.new-2.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-3.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-4.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-5.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-6.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-7.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-8.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-9.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-10.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-11.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-12.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-13.png) 
+![](USCensus1977_State_HW4_files/figure-html/predict.data.new-2.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-3.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-4.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-5.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-6.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-7.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-8.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-9.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-10.png) ![](USCensus1977_State_HW4_files/figure-html/predict.data.new-11.png) 
 
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
-## 43      12237   4188        2.2    70.90   12.2    47.4    35 262134
+## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 19       1058   3694        0.7    70.39    2.7    54.7   161  30920
 ## 6        2541   4884        0.7    72.06    6.8    63.9   166 103766
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 43        TX     267339  -98.7857 31.3897 West South Central      Texas
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 19        ME      33215  -68.9801 45.6226        New England      Maine
-## 6         CO     104247 -105.5130 38.6777           Mountain   Colorado
-##    state.region state.division.fctr state.region.fctr      .rnorm
-## 11         West             Pacific              West  0.32215158
-## 43        South  West South Central             South -0.10862424
-## 8         South      South Atlantic             South -0.06901731
-## 19    Northeast         New England         Northeast  1.64219199
-## 6          West            Mountain              West  0.62886063
-##    Life.Exp.predict.Final.rf Life.Exp.predict.Final.rf.err .label
-## 11                  72.55698                     1.0430193     HI
-## 43                  70.15545                     0.7445467     TX
-## 8                   70.71212                     0.6521197     DE
-## 19                  70.99412                     0.6041163     ME
-## 6                   71.47361                     0.5863867     CO
+## 40       2816   3635        2.3    67.96   11.6    37.8    65  30225
+##    state.abb state.area         x       y state.division     state.name
+## 11        HI       6450 -126.2500 31.7500        Pacific         Hawaii
+## 28        NV     110540 -116.8510 39.1063       Mountain         Nevada
+## 8         DE       2057  -74.9841 38.6777 South Atlantic       Delaware
+## 6         CO     104247 -105.5130 38.6777       Mountain       Colorado
+## 40        SC      31055  -80.5056 33.6190 South Atlantic South Carolina
+##    state.region      .rnorm Life.Exp.predict.Final.rf
+## 11         West  0.32215158                  72.42603
+## 28         West -0.42257687                  69.77368
+## 8         South -0.06901731                  70.74923
+## 6          West  0.62886063                  71.37722
+## 40        South  0.54839792                  68.60615
+##    Life.Exp.predict.Final.rf.err .label
+## 11                     1.1739723     HI
+## 28                     0.7436837     NV
+## 8                      0.6892330     DE
+## 6                      0.6827823     CO
+## 40                     0.6461463     SC
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/predict.data.new-14.png) 
+![](USCensus1977_State_HW4_files/figure-html/predict.data.new-12.png) 
 
 ```r
 tmp_replay_lst <- replay.petrisim(pn=glb_analytics_pn, 
@@ -4002,13 +3967,13 @@ tmp_replay_lst <- replay.petrisim(pn=glb_analytics_pn,
 ## 6.0000 	 6 	 0 0 1 2
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/predict.data.new-15.png) 
+![](USCensus1977_State_HW4_files/figure-html/predict.data.new-13.png) 
 
 ```r
 print(ggplot.petrinet(tmp_replay_lst[["pn"]]) + coord_flip())
 ```
 
-![](USCensus1977_State_HW4_files/figure-html/predict.data.new-16.png) 
+![](USCensus1977_State_HW4_files/figure-html/predict.data.new-14.png) 
 
 Null Hypothesis ($\sf{H_{0}}$): mpg is not impacted by am_fctr.  
 The variance by am_fctr appears to be independent. 
@@ -4022,37 +3987,37 @@ We reject the null hypothesis i.e. we have evidence to conclude that am_fctr imp
 
 ```
 ##                   chunk_label chunk_step_major chunk_step_minor elapsed
-## 10                 fit.models                5                1  32.337
-## 11      fit.data.training.all                6                0  39.180
-## 13           predict.data.new                7                0  48.366
-## 12      fit.data.training.all                6                1  42.201
-## 9                  fit.models                5                0   5.233
-## 4         manage_missing_data                2                2   1.479
-## 7             select_features                4                0   2.759
-## 5          encode_retype_data                2                3   1.847
-## 2                cleanse_data                2                0   0.368
-## 8  remove_correlated_features                4                1   2.946
-## 6            extract_features                3                0   1.901
-## 3       inspectORexplore.data                2                1   0.405
+## 10                 fit.models                5                1  46.815
+## 11      fit.data.training.all                6                0  57.490
+## 13           predict.data.new                7                0  67.388
+## 12      fit.data.training.all                6                1  61.469
+## 9                  fit.models                5                0   4.856
+## 4         manage_missing_data                2                2   1.741
+## 7             select_features                4                0   3.062
+## 5          encode_retype_data                2                3   2.164
+## 2                cleanse_data                2                0   0.413
+## 8  remove_correlated_features                4                1   3.272
+## 6            extract_features                3                0   2.226
+## 3       inspectORexplore.data                2                1   0.449
 ## 1                 import_data                1                0   0.002
 ##    elapsed_diff
-## 10       27.104
-## 11        6.843
-## 13        6.165
-## 12        3.021
-## 9         2.287
-## 4         1.074
-## 7         0.858
-## 5         0.368
-## 2         0.366
-## 8         0.187
-## 6         0.054
-## 3         0.037
+## 10       41.959
+## 11       10.675
+## 13        5.919
+## 12        3.979
+## 9         1.584
+## 4         1.292
+## 7         0.836
+## 5         0.423
+## 2         0.411
+## 8         0.210
+## 6         0.062
+## 3         0.036
 ## 1         0.000
 ```
 
 ```
-## [1] "Total Elapsed Time: 48.366 secs"
+## [1] "Total Elapsed Time: 67.388 secs"
 ```
 
 ![](USCensus1977_State_HW4_files/figure-html/print_sessionInfo-1.png) 
