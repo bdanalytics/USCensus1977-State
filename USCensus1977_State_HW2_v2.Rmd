@@ -2283,21 +2283,29 @@ for (method in glb_models_method_vctr) {
 # indep_vars_vctr <- setdiff(indep_vars_vctr, ".rnorm")
 
     # easier to include features
-#model_id <- "Rank9.2"; indep_vars_vctr <- c(NULL
-#    ,"<feat1>"
-#    ,"<feat1>*<feat2>"
-#    ,"<feat1>:<feat2>"
-#                                            )
-# for (method in c("bayesglm")) {
-#     ret_lst <- myfit_mdl(model_id=model_id, model_method=method,
-#                                 indep_vars_vctr=indep_vars_vctr,
-#                                 model_type=glb_model_type,
-#                                 rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
-#                                 fit_df=glb_fitobs_df, OOB_df=glb_OOBobs_df,
-#                     n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
-#     csm_mdl_id <- paste0(model_id, ".", method)
-#     csm_featsimp_df <- myget_feats_importance(glb_models_lst[[paste0(model_id, ".", method)]]);         print(head(csm_featsimp_df))
-# }
+model_id <- "Csm.1"; indep_vars_vctr <- c("Population", "Income", "Illiteracy", "Murder", "HS.Grad", "Frost", "Area")
+for (method in c("lm")) {
+    ret_lst <- myfit_mdl(model_id=model_id, model_method=method,
+                                indep_vars_vctr=indep_vars_vctr,
+                                model_type=glb_model_type,
+                                rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                                fit_df=glb_fitobs_df, OOB_df=glb_OOBobs_df,
+                    n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
+    csm_mdl_id <- paste0(model_id, ".", method)
+    csm_featsimp_df <- myget_feats_importance(glb_models_lst[[paste0(model_id, ".", method)]]);         print(head(csm_featsimp_df))
+}
+
+model_id <- "Csm.2"; indep_vars_vctr <- c("Population", "Murder", "HS.Grad", "Frost")
+for (method in c("lm")) {
+    ret_lst <- myfit_mdl(model_id=model_id, model_method=method,
+                                indep_vars_vctr=indep_vars_vctr,
+                                model_type=glb_model_type,
+                                rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                                fit_df=glb_fitobs_df, OOB_df=glb_OOBobs_df,
+                    n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
+    csm_mdl_id <- paste0(model_id, ".", method)
+    csm_featsimp_df <- myget_feats_importance(glb_models_lst[[paste0(model_id, ".", method)]]);         print(head(csm_featsimp_df))
+}
 
 # Ntv.1.lm <- lm(reformulate(indep_vars_vctr, glb_rsp_var), glb_trnobs_df); print(summary(Ntv.1.lm))
 

@@ -423,7 +423,7 @@ glb_chunks_df <- myadd_chunk(NULL, "import.data")
 
 ```
 ##         label step_major step_minor   bgn end elapsed
-## 1 import.data          1          0 8.136  NA      NA
+## 1 import.data          1          0 8.926  NA      NA
 ```
 
 ## Step `1.0: import data`
@@ -783,8 +783,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "inspect.data", major.inc=TRUE)
 
 ```
 ##          label step_major step_minor   bgn   end elapsed
-## 1  import.data          1          0 8.136 8.621   0.485
-## 2 inspect.data          2          0 8.622    NA      NA
+## 1  import.data          1          0 8.926 9.365    0.44
+## 2 inspect.data          2          0 9.366    NA      NA
 ```
 
 ## Step `2.0: inspect data`
@@ -1084,8 +1084,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "scrub.data", major.inc=FALSE)
 
 ```
 ##          label step_major step_minor    bgn    end elapsed
-## 2 inspect.data          2          0  8.622 13.225   4.603
-## 3   scrub.data          2          1 13.226     NA      NA
+## 2 inspect.data          2          0  9.366 13.968   4.602
+## 3   scrub.data          2          1 13.968     NA      NA
 ```
 
 ### Step `2.1: scrub data`
@@ -1390,9 +1390,9 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "transform.data", major.inc=FALSE)
 ```
 
 ```
-##            label step_major step_minor    bgn   end elapsed
-## 3     scrub.data          2          1 13.226 14.63   1.404
-## 4 transform.data          2          2 14.631    NA      NA
+##            label step_major step_minor    bgn    end elapsed
+## 3     scrub.data          2          1 13.968 15.244   1.276
+## 4 transform.data          2          2 15.244     NA      NA
 ```
 
 ```r
@@ -1460,9 +1460,9 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "extract.features", major.inc=TRUE)
 ```
 
 ```
-##              label step_major step_minor    bgn    end elapsed
-## 4   transform.data          2          2 14.631 14.684   0.053
-## 5 extract.features          3          0 14.684     NA      NA
+##              label step_major step_minor    bgn  end elapsed
+## 4   transform.data          2          2 15.244 15.3   0.056
+## 5 extract.features          3          0 15.300   NA      NA
 ```
 
 ```r
@@ -1471,7 +1471,7 @@ extract.features_chunk_df <- myadd_chunk(NULL, "extract.features_bgn")
 
 ```
 ##                  label step_major step_minor    bgn end elapsed
-## 1 extract.features_bgn          1          0 14.689  NA      NA
+## 1 extract.features_bgn          1          0 15.305  NA      NA
 ```
 
 ```r
@@ -1619,8 +1619,8 @@ extract.features_chunk_df <- myadd_chunk(extract.features_chunk_df,
 
 ```
 ##                                 label step_major step_minor    bgn    end
-## 1                extract.features_bgn          1          0 14.689 14.701
-## 2 extract.features_factorize.str.vars          2          0 14.702     NA
+## 1                extract.features_bgn          1          0 15.305 15.317
+## 2 extract.features_factorize.str.vars          2          0 15.318     NA
 ##   elapsed
 ## 1   0.012
 ## 2      NA
@@ -2219,9 +2219,9 @@ extract.features_chunk_df <- myadd_chunk(extract.features_chunk_df, "extract.fea
 ```
 
 ```
-##                                 label step_major step_minor    bgn    end
-## 2 extract.features_factorize.str.vars          2          0 14.702 14.723
-## 3                extract.features_end          3          0 14.724     NA
+##                                 label step_major step_minor    bgn   end
+## 2 extract.features_factorize.str.vars          2          0 15.318 15.34
+## 3                extract.features_end          3          0 15.340    NA
 ##   elapsed
 ## 2   0.022
 ## 3      NA
@@ -2233,12 +2233,12 @@ myplt_chunk(extract.features_chunk_df)
 
 ```
 ##                                 label step_major step_minor    bgn    end
-## 2 extract.features_factorize.str.vars          2          0 14.702 14.723
-## 1                extract.features_bgn          1          0 14.689 14.701
+## 2 extract.features_factorize.str.vars          2          0 15.318 15.340
+## 1                extract.features_bgn          1          0 15.305 15.317
 ##   elapsed duration
-## 2   0.022    0.021
+## 2   0.022    0.022
 ## 1   0.012    0.012
-## [1] "Total Elapsed Time: 14.723 secs"
+## [1] "Total Elapsed Time: 15.34 secs"
 ```
 
 ![](USCensus1977_State_HW2_v2_files/figure-html/extract.features-1.png) 
@@ -2271,8 +2271,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "cluster.data", major.inc=TRUE)
 
 ```
 ##              label step_major step_minor    bgn    end elapsed
-## 5 extract.features          3          0 14.684 15.879   1.195
-## 6     cluster.data          4          0 15.879     NA      NA
+## 5 extract.features          3          0 15.300 16.438   1.139
+## 6     cluster.data          4          0 16.439     NA      NA
 ```
 
 ### Step `4.0: cluster data`
@@ -2283,8 +2283,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "manage.missing.data", major.inc=FAL
 
 ```
 ##                 label step_major step_minor    bgn    end elapsed
-## 6        cluster.data          4          0 15.879 16.212   0.333
-## 7 manage.missing.data          4          1 16.212     NA      NA
+## 6        cluster.data          4          0 16.439 16.707   0.268
+## 7 manage.missing.data          4          1 16.707     NA      NA
 ```
 
 ```r
@@ -2460,8 +2460,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "select.features", major.inc=TRUE)
 
 ```
 ##                 label step_major step_minor    bgn    end elapsed
-## 7 manage.missing.data          4          1 16.212 16.271   0.059
-## 8     select.features          5          0 16.271     NA      NA
+## 7 manage.missing.data          4          1 16.707 16.762   0.055
+## 8     select.features          5          0 16.763     NA      NA
 ```
 
 ## Step `5.0: select features`
@@ -2678,8 +2678,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "partition.data.training", major.inc
 
 ```
 ##                     label step_major step_minor    bgn    end elapsed
-## 8         select.features          5          0 16.271 16.885   0.614
-## 9 partition.data.training          6          0 16.885     NA      NA
+## 8         select.features          5          0 16.763 17.353    0.59
+## 9 partition.data.training          6          0 17.354     NA      NA
 ```
 
 ## Step `6.0: partition data training`
@@ -2927,8 +2927,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "fit.models", major.inc=TRUE)
 
 ```
 ##                      label step_major step_minor    bgn    end elapsed
-## 9  partition.data.training          6          0 16.885 17.224   0.339
-## 10              fit.models          7          0 17.225     NA      NA
+## 9  partition.data.training          6          0 17.354 17.652   0.299
+## 10              fit.models          7          0 17.653     NA      NA
 ```
 
 ## Step `7.0: fit models`
@@ -3015,7 +3015,7 @@ ret_lst <- myfit_mdl(model_id="MFO",
 ## [1] "    calling mypredict_mdl for fit:"
 ## [1] "    calling mypredict_mdl for OOB:"
 ##   model_id model_method  feats max.nTuningRuns min.elapsedtime.everything
-## 1   MFO.lm           lm .rnorm               0                      0.647
+## 1   MFO.lm           lm .rnorm               0                      0.649
 ##   min.elapsedtime.final max.R.sq.fit min.RMSE.fit max.R.sq.OOB
 ## 1                 0.003   0.03526376     1.274159   -0.1638247
 ##   min.RMSE.OOB max.Adj.R.sq.fit
@@ -3089,7 +3089,7 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y.cv.0",
 ##               model_id model_method          feats max.nTuningRuns
 ## 1 Max.cor.Y.cv.0.rpart        rpart Murder, Income               0
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      0.544                 0.008            0
+## 1                      0.549                 0.007            0
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB
 ## 1     1.297237            0      1.40222
 ```
@@ -3171,7 +3171,7 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y.cv.0.cp.0",
 ##                    model_id model_method          feats max.nTuningRuns
 ## 1 Max.cor.Y.cv.0.cp.0.rpart        rpart Murder, Income               0
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      0.433                 0.006    0.6647463
+## 1                      0.437                 0.006    0.6647463
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB
 ## 1    0.7511147    0.4764582     1.014593
 ```
@@ -3227,7 +3227,7 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y",
 ##          model_id model_method          feats max.nTuningRuns
 ## 1 Max.cor.Y.rpart        rpart Murder, Income               3
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                       0.91                  0.01            0
+## 1                      0.924                 0.007            0
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit min.RMSESD.fit
 ## 1      1.13825            0      1.40222        0.3110708      0.1557052
 ##   max.RsquaredSD.fit
@@ -3281,7 +3281,7 @@ ret_lst <- myfit_mdl(model_id="Max.cor.Y",
 ##       model_id model_method          feats max.nTuningRuns
 ## 1 Max.cor.Y.lm           lm Murder, Income               1
 ##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
-## 1                      1.026                 0.002     0.705827
+## 1                      1.023                 0.002     0.705827
 ##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit max.Rsquared.fit
 ## 1    0.8349469     0.491967    0.9994526        0.6874411        0.6946483
 ##   min.RMSESD.fit max.RsquaredSD.fit
@@ -3371,7 +3371,7 @@ if (length(int_feats <- setdiff(unique(glb_feats_df$cor.high.X), NA)) > 0) {
 ##                                                              feats
 ## 1 Murder, Income, Murder:Illiteracy, Murder:HS.Grad, Murder:Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      0.813                 0.003
+## 1               1                      0.805                 0.003
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
 ## 1    0.7187136    0.8694013     0.492048    0.9993728        0.6812088
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
@@ -3483,7 +3483,7 @@ ret_lst <- myfit_mdl(model_id="Low.cor.X",
 ##                                                                          feats
 ## 1 Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      0.812                 0.005
+## 1               1                      0.866                 0.006
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
 ## 1    0.8968055     1.310286   -0.4350738     1.679784        0.8153362
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
@@ -3498,8 +3498,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "fit.models", major.inc=FALSE)
 
 ```
 ##         label step_major step_minor    bgn    end elapsed
-## 10 fit.models          7          0 17.225 30.427  13.202
-## 11 fit.models          7          1 30.427     NA      NA
+## 10 fit.models          7          0 17.653 31.074  13.422
+## 11 fit.models          7          1 31.075     NA      NA
 ```
 
 
@@ -3509,7 +3509,7 @@ fit.models_1_chunk_df <- myadd_chunk(NULL, "fit.models_1_bgn")
 
 ```
 ##              label step_major step_minor    bgn end elapsed
-## 1 fit.models_1_bgn          1          0 31.835  NA      NA
+## 1 fit.models_1_bgn          1          0 32.618  NA      NA
 ```
 
 ```r
@@ -3592,8 +3592,8 @@ for (method in glb_models_method_vctr) {
 
 ```
 ##              label step_major step_minor    bgn    end elapsed
-## 1 fit.models_1_bgn          1          0 31.835 31.851   0.016
-## 2  fit.models_1_lm          2          0 31.852     NA      NA
+## 1 fit.models_1_bgn          1          0 32.618 32.631   0.013
+## 2  fit.models_1_lm          2          0 32.631     NA      NA
 ## [1] "fitting model: All.X.lm"
 ## [1] "    indep_vars: HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder"
 ## Aggregating results
@@ -3712,14 +3712,14 @@ for (method in glb_models_method_vctr) {
 ##                                                                                                                            feats
 ## 1 HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      0.838                 0.007
+## 1               1                      0.841                  0.01
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
 ## 1    0.9051765      1.83507   -0.4939665     1.713905        0.7850667
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
 ## 1        0.3370194      0.5357182          0.1074956
 ##              label step_major step_minor    bgn    end elapsed
-## 2  fit.models_1_lm          2          0 31.852 34.103   2.251
-## 3 fit.models_1_glm          3          0 34.103     NA      NA
+## 2  fit.models_1_lm          2          0 32.631 35.277   2.646
+## 3 fit.models_1_glm          3          0 35.277     NA      NA
 ## [1] "fitting model: All.X.glm"
 ## [1] "    indep_vars: HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder"
 ## Aggregating results
@@ -3842,14 +3842,14 @@ for (method in glb_models_method_vctr) {
 ##                                                                                                                            feats
 ## 1 HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      0.845                 0.014
+## 1               1                      0.865                 0.014
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB min.aic.fit
 ## 1    0.9051765      1.83507   -0.4939665     1.713905    77.09146
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
 ## 1        0.3370194      0.5357182          0.1074956
 ##                   label step_major step_minor    bgn   end elapsed
-## 3      fit.models_1_glm          3          0 34.103 37.17   3.067
-## 4 fit.models_1_bayesglm          4          0 37.170    NA      NA
+## 3      fit.models_1_glm          3          0 35.277 37.63   2.354
+## 4 fit.models_1_bayesglm          4          0 37.631    NA      NA
 ## [1] "fitting model: All.X.bayesglm"
 ## [1] "    indep_vars: HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder"
 ```
@@ -3953,14 +3953,14 @@ for (method in glb_models_method_vctr) {
 ##                                                                                                                            feats
 ## 1 HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      2.205                 0.041
+## 1               1                      1.976                 0.051
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB min.aic.fit
 ## 1    0.9051175     1.673164    -0.485121     1.708855    83.11321
 ##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
 ## 1        0.3637272      0.3906281          0.0886578
 ##                   label step_major step_minor    bgn    end elapsed
-## 4 fit.models_1_bayesglm          4          0 37.170 40.277   3.107
-## 5    fit.models_1_rpart          5          0 40.278     NA      NA
+## 4 fit.models_1_bayesglm          4          0 37.631 40.515   2.884
+## 5    fit.models_1_rpart          5          0 40.515     NA      NA
 ## [1] "fitting model: All.X.no.rnorm.rpart"
 ## [1] "    indep_vars: HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder"
 ## Aggregating results
@@ -4002,14 +4002,14 @@ for (method in glb_models_method_vctr) {
 ##                                                                                                                    feats
 ## 1 HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               3                      0.895                 0.014
+## 1               3                      0.921                 0.013
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit
 ## 1            0     1.155693            0      1.40222        0.3011671
 ##   min.RMSESD.fit max.RsquaredSD.fit
 ## 1       0.185915          0.1579136
 ##                label step_major step_minor    bgn    end elapsed
-## 5 fit.models_1_rpart          5          0 40.278 42.539   2.261
-## 6    fit.models_1_rf          6          0 42.539     NA      NA
+## 5 fit.models_1_rpart          5          0 40.515 43.934   3.419
+## 6    fit.models_1_rf          6          0 43.934     NA      NA
 ## [1] "fitting model: All.X.no.rnorm.rf"
 ## [1] "    indep_vars: HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder"
 ```
@@ -4072,11 +4072,11 @@ for (method in glb_models_method_vctr) {
 ##                                                                                                                    feats
 ## 1 HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder
 ##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               3                      1.054                 0.023
+## 1               3                      1.782                 0.024
 ##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Rsquared.fit
-## 1    0.8648624    0.7847471    0.3724496     1.110307        0.6995869
+## 1    0.8648624    0.7878053    0.3724496     1.110307        0.6989583
 ##   min.RMSESD.fit max.RsquaredSD.fit
-## 1      0.2114882          0.1683903
+## 1      0.2050785          0.1760712
 ```
 
 ```r
@@ -4091,22 +4091,139 @@ for (method in glb_models_method_vctr) {
 # indep_vars_vctr <- setdiff(indep_vars_vctr, ".rnorm")
 
     # easier to include features
-#model_id <- "Rank9.2"; indep_vars_vctr <- c(NULL
-#    ,"<feat1>"
-#    ,"<feat1>*<feat2>"
-#    ,"<feat1>:<feat2>"
-#                                            )
-# for (method in c("bayesglm")) {
-#     ret_lst <- myfit_mdl(model_id=model_id, model_method=method,
-#                                 indep_vars_vctr=indep_vars_vctr,
-#                                 model_type=glb_model_type,
-#                                 rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
-#                                 fit_df=glb_fitobs_df, OOB_df=glb_OOBobs_df,
-#                     n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
-#     csm_mdl_id <- paste0(model_id, ".", method)
-#     csm_featsimp_df <- myget_feats_importance(glb_models_lst[[paste0(model_id, ".", method)]]);         print(head(csm_featsimp_df))
-# }
+model_id <- "Csm.1"; indep_vars_vctr <- c("Population", "Income", "Illiteracy", "Murder", "HS.Grad", "Frost", "Area")
+for (method in c("lm")) {
+    ret_lst <- myfit_mdl(model_id=model_id, model_method=method,
+                                indep_vars_vctr=indep_vars_vctr,
+                                model_type=glb_model_type,
+                                rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                                fit_df=glb_fitobs_df, OOB_df=glb_OOBobs_df,
+                    n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
+    csm_mdl_id <- paste0(model_id, ".", method)
+    csm_featsimp_df <- myget_feats_importance(glb_models_lst[[paste0(model_id, ".", method)]]);         print(head(csm_featsimp_df))
+}
+```
 
+```
+## [1] "fitting model: Csm.1.lm"
+## [1] "    indep_vars: Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area"
+## Aggregating results
+## Fitting final model on full training set
+```
+
+![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-13.png) ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-14.png) ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-15.png) ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-16.png) 
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.3740 -0.2984  0.1442  0.4722  0.8784 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  7.161e+01  2.121e+00  33.759  < 2e-16 ***
+## Population   2.336e-05  4.786e-05   0.488   0.6294    
+## Income       1.215e-04  3.436e-04   0.354   0.7263    
+## Illiteracy  -3.890e-01  4.807e-01  -0.809   0.4255    
+## Murder      -2.614e-01  4.630e-02  -5.647 5.39e-06 ***
+## HS.Grad      1.943e-02  3.316e-02   0.586   0.5629    
+## Frost       -3.684e-03  3.875e-03  -0.951   0.3502    
+## Area         6.115e-06  3.258e-06   1.877   0.0714 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6674 on 27 degrees of freedom
+## Multiple R-squared:  0.7958,	Adjusted R-squared:  0.7429 
+## F-statistic: 15.03 on 7 and 27 DF,  p-value: 7.81e-08
+## 
+## [1] "    calling mypredict_mdl for fit:"
+## [1] "    calling mypredict_mdl for OOB:"
+##   model_id model_method
+## 1 Csm.1.lm           lm
+##                                                          feats
+## 1 Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
+## 1               1                      0.845                 0.004
+##   max.R.sq.fit min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
+## 1    0.7957973     1.070277   0.09058028     1.337206        0.7428559
+##   max.Rsquared.fit min.RMSESD.fit max.RsquaredSD.fit
+## 1        0.5047781       0.222815         0.06898573
+##            importance
+## Murder     100.000000
+## Area        28.773018
+## Frost       11.278727
+## Illiteracy   8.604534
+## HS.Grad      4.384197
+## Population   2.537741
+```
+
+```r
+model_id <- "Csm.2"; indep_vars_vctr <- c("Population", "Murder", "HS.Grad", "Frost")
+for (method in c("lm")) {
+    ret_lst <- myfit_mdl(model_id=model_id, model_method=method,
+                                indep_vars_vctr=indep_vars_vctr,
+                                model_type=glb_model_type,
+                                rsp_var=glb_rsp_var, rsp_var_out=glb_rsp_var_out,
+                                fit_df=glb_fitobs_df, OOB_df=glb_OOBobs_df,
+                    n_cv_folds=glb_n_cv_folds, tune_models_df=glb_tune_models_df)
+    csm_mdl_id <- paste0(model_id, ".", method)
+    csm_featsimp_df <- myget_feats_importance(glb_models_lst[[paste0(model_id, ".", method)]]);         print(head(csm_featsimp_df))
+}
+```
+
+```
+## [1] "fitting model: Csm.2.lm"
+## [1] "    indep_vars: Population, Murder, HS.Grad, Frost"
+## Aggregating results
+## Fitting final model on full training set
+```
+
+![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-17.png) ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-18.png) ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-19.png) ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_1-20.png) 
+
+```
+## 
+## Call:
+## lm(formula = .outcome ~ ., data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.4481 -0.4838  0.1375  0.4930  0.8952 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  6.977e+01  1.139e+00  61.245  < 2e-16 ***
+## Population   5.537e-05  3.712e-05   1.492  0.14619    
+## Murder      -2.501e-01  4.308e-02  -5.806  2.4e-06 ***
+## HS.Grad      5.710e-02  1.818e-02   3.140  0.00378 ** 
+## Frost       -2.704e-03  2.988e-03  -0.905  0.37282    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.6748 on 30 degrees of freedom
+## Multiple R-squared:  0.7681,	Adjusted R-squared:  0.7372 
+## F-statistic: 24.84 on 4 and 30 DF,  p-value: 3.781e-09
+## 
+## [1] "    calling mypredict_mdl for fit:"
+## [1] "    calling mypredict_mdl for OOB:"
+##   model_id model_method                              feats max.nTuningRuns
+## 1 Csm.2.lm           lm Population, Murder, HS.Grad, Frost               1
+##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
+## 1                      0.808                 0.003    0.7680836
+##   min.RMSE.fit max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit max.Rsquared.fit
+## 1    0.8483694    0.6186259     0.865948        0.7371614        0.6383817
+##   min.RMSESD.fit max.RsquaredSD.fit
+## 1      0.1624027         0.04550407
+##            importance
+## Murder      100.00000
+## HS.Grad      45.60984
+## Population   11.97951
+## Frost         0.00000
+```
+
+```r
 # Ntv.1.lm <- lm(reformulate(indep_vars_vctr, glb_rsp_var), glb_trnobs_df); print(summary(Ntv.1.lm))
 
 #print(dsp_models_df <- orderBy(model_sel_frmla, glb_models_df)[, dsp_models_cols])
@@ -4177,6 +4294,8 @@ print(glb_models_df)
 ## All.X.bayesglm                       All.X.bayesglm     bayesglm
 ## All.X.no.rnorm.rpart           All.X.no.rnorm.rpart        rpart
 ## All.X.no.rnorm.rf                 All.X.no.rnorm.rf           rf
+## Csm.1.lm                                   Csm.1.lm           lm
+## Csm.2.lm                                   Csm.2.lm           lm
 ##                                                                                                                                                    feats
 ## MFO.lm                                                                                                                                            .rnorm
 ## Max.cor.Y.cv.0.rpart                                                                                                                      Murder, Income
@@ -4190,45 +4309,53 @@ print(glb_models_df)
 ## All.X.bayesglm            HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder
 ## All.X.no.rnorm.rpart              HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder
 ## All.X.no.rnorm.rf                 HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder
+## Csm.1.lm                                                                                    Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+## Csm.2.lm                                                                                                              Population, Murder, HS.Grad, Frost
 ##                           max.nTuningRuns min.elapsedtime.everything
-## MFO.lm                                  0                      0.647
-## Max.cor.Y.cv.0.rpart                    0                      0.544
-## Max.cor.Y.cv.0.cp.0.rpart               0                      0.433
-## Max.cor.Y.rpart                         3                      0.910
-## Max.cor.Y.lm                            1                      1.026
-## Interact.High.cor.Y.lm                  1                      0.813
-## Low.cor.X.lm                            1                      0.812
-## All.X.lm                                1                      0.838
-## All.X.glm                               1                      0.845
-## All.X.bayesglm                          1                      2.205
-## All.X.no.rnorm.rpart                    3                      0.895
-## All.X.no.rnorm.rf                       3                      1.054
+## MFO.lm                                  0                      0.649
+## Max.cor.Y.cv.0.rpart                    0                      0.549
+## Max.cor.Y.cv.0.cp.0.rpart               0                      0.437
+## Max.cor.Y.rpart                         3                      0.924
+## Max.cor.Y.lm                            1                      1.023
+## Interact.High.cor.Y.lm                  1                      0.805
+## Low.cor.X.lm                            1                      0.866
+## All.X.lm                                1                      0.841
+## All.X.glm                               1                      0.865
+## All.X.bayesglm                          1                      1.976
+## All.X.no.rnorm.rpart                    3                      0.921
+## All.X.no.rnorm.rf                       3                      1.782
+## Csm.1.lm                                1                      0.845
+## Csm.2.lm                                1                      0.808
 ##                           min.elapsedtime.final max.R.sq.fit min.RMSE.fit
 ## MFO.lm                                    0.003   0.03526376    1.2741594
-## Max.cor.Y.cv.0.rpart                      0.008   0.00000000    1.2972374
+## Max.cor.Y.cv.0.rpart                      0.007   0.00000000    1.2972374
 ## Max.cor.Y.cv.0.cp.0.rpart                 0.006   0.66474630    0.7511147
-## Max.cor.Y.rpart                           0.010   0.00000000    1.1382505
+## Max.cor.Y.rpart                           0.007   0.00000000    1.1382505
 ## Max.cor.Y.lm                              0.002   0.70582695    0.8349469
 ## Interact.High.cor.Y.lm                    0.003   0.71871361    0.8694013
-## Low.cor.X.lm                              0.005   0.89680550    1.3102855
-## All.X.lm                                  0.007   0.90517649    1.8350704
+## Low.cor.X.lm                              0.006   0.89680550    1.3102855
+## All.X.lm                                  0.010   0.90517649    1.8350704
 ## All.X.glm                                 0.014   0.90517649    1.8350704
-## All.X.bayesglm                            0.041   0.90511753    1.6731644
-## All.X.no.rnorm.rpart                      0.014   0.00000000    1.1556929
-## All.X.no.rnorm.rf                         0.023   0.86486236    0.7847471
+## All.X.bayesglm                            0.051   0.90511753    1.6731644
+## All.X.no.rnorm.rpart                      0.013   0.00000000    1.1556929
+## All.X.no.rnorm.rf                         0.024   0.86486236    0.7878053
+## Csm.1.lm                                  0.004   0.79579730    1.0702772
+## Csm.2.lm                                  0.003   0.76808360    0.8483694
 ##                           max.R.sq.OOB min.RMSE.OOB max.Adj.R.sq.fit
-## MFO.lm                      -0.1638247    1.5127250      0.006029329
-## Max.cor.Y.cv.0.rpart         0.0000000    1.4022202               NA
-## Max.cor.Y.cv.0.cp.0.rpart    0.4764582    1.0145931               NA
-## Max.cor.Y.rpart              0.0000000    1.4022202               NA
-## Max.cor.Y.lm                 0.4919670    0.9994526      0.687441138
-## Interact.High.cor.Y.lm       0.4920480    0.9993728      0.681208758
-## Low.cor.X.lm                -0.4350738    1.6797836      0.815336155
-## All.X.lm                    -0.4939665    1.7139046      0.785066700
-## All.X.glm                   -0.4939665    1.7139046               NA
-## All.X.bayesglm              -0.4851210    1.7088547               NA
-## All.X.no.rnorm.rpart         0.0000000    1.4022202               NA
-## All.X.no.rnorm.rf            0.3724496    1.1103073               NA
+## MFO.lm                     -0.16382466    1.5127250      0.006029329
+## Max.cor.Y.cv.0.rpart        0.00000000    1.4022202               NA
+## Max.cor.Y.cv.0.cp.0.rpart   0.47645818    1.0145931               NA
+## Max.cor.Y.rpart             0.00000000    1.4022202               NA
+## Max.cor.Y.lm                0.49196697    0.9994526      0.687441138
+## Interact.High.cor.Y.lm      0.49204804    0.9993728      0.681208758
+## Low.cor.X.lm               -0.43507375    1.6797836      0.815336155
+## All.X.lm                   -0.49396649    1.7139046      0.785066700
+## All.X.glm                  -0.49396649    1.7139046               NA
+## All.X.bayesglm             -0.48512097    1.7088547               NA
+## All.X.no.rnorm.rpart        0.00000000    1.4022202               NA
+## All.X.no.rnorm.rf           0.37244959    1.1103073               NA
+## Csm.1.lm                    0.09058028    1.3372063      0.742855858
+## Csm.2.lm                    0.61862592    0.8659480      0.737161419
 ##                           max.Rsquared.fit min.RMSESD.fit
 ## MFO.lm                                  NA             NA
 ## Max.cor.Y.cv.0.rpart                    NA             NA
@@ -4241,20 +4368,24 @@ print(glb_models_df)
 ## All.X.glm                        0.3370194      0.5357182
 ## All.X.bayesglm                   0.3637272      0.3906281
 ## All.X.no.rnorm.rpart             0.3011671      0.1859150
-## All.X.no.rnorm.rf                0.6995869      0.2114882
+## All.X.no.rnorm.rf                0.6989583      0.2050785
+## Csm.1.lm                         0.5047781      0.2228150
+## Csm.2.lm                         0.6383817      0.1624027
 ##                           max.RsquaredSD.fit min.aic.fit
 ## MFO.lm                                    NA          NA
 ## Max.cor.Y.cv.0.rpart                      NA          NA
 ## Max.cor.Y.cv.0.cp.0.rpart                 NA          NA
-## Max.cor.Y.rpart                    0.1418048          NA
-## Max.cor.Y.lm                       0.1244454          NA
-## Interact.High.cor.Y.lm             0.1714077          NA
-## Low.cor.X.lm                       0.1158658          NA
-## All.X.lm                           0.1074956          NA
-## All.X.glm                          0.1074956    77.09146
-## All.X.bayesglm                     0.0886578    83.11321
-## All.X.no.rnorm.rpart               0.1579136          NA
-## All.X.no.rnorm.rf                  0.1683903          NA
+## Max.cor.Y.rpart                   0.14180475          NA
+## Max.cor.Y.lm                      0.12444542          NA
+## Interact.High.cor.Y.lm            0.17140770          NA
+## Low.cor.X.lm                      0.11586579          NA
+## All.X.lm                          0.10749559          NA
+## All.X.glm                         0.10749559    77.09146
+## All.X.bayesglm                    0.08865780    83.11321
+## All.X.no.rnorm.rpart              0.15791358          NA
+## All.X.no.rnorm.rf                 0.17607120          NA
+## Csm.1.lm                          0.06898573          NA
+## Csm.2.lm                          0.04550407          NA
 ```
 
 ```r
@@ -4265,8 +4396,8 @@ fit.models_1_chunk_df <- myadd_chunk(fit.models_1_chunk_df, "fit.models_1_end",
 
 ```
 ##              label step_major step_minor    bgn    end elapsed
-## 6  fit.models_1_rf          6          0 42.539 44.976   2.437
-## 7 fit.models_1_end          7          0 44.977     NA      NA
+## 6  fit.models_1_rf          6          0 43.934 52.044   8.111
+## 7 fit.models_1_end          7          0 52.045     NA      NA
 ```
 
 ```r
@@ -4274,9 +4405,9 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "fit.models", major.inc=FALSE)
 ```
 
 ```
-##         label step_major step_minor    bgn    end elapsed
-## 11 fit.models          7          1 30.427 44.985  14.559
-## 12 fit.models          7          2 44.986     NA      NA
+##         label step_major step_minor    bgn   end elapsed
+## 11 fit.models          7          1 31.075 52.05  20.975
+## 12 fit.models          7          2 52.051    NA      NA
 ```
 
 
@@ -4341,6 +4472,8 @@ print(plt_models_df)
 ## All.X.bayesglm                       All.X.bayesglm     bayesglm
 ## All.X.no.rnorm.rpart           All.X.no.rnorm.rpart        rpart
 ## All.X.no.rnorm.rf                 All.X.no.rnorm.rf           rf
+## Csm.1.lm                                   Csm.1.lm           lm
+## Csm.2.lm                                   Csm.2.lm           lm
 ##                                                                                                                                                    feats
 ## MFO.lm                                                                                                                                            .rnorm
 ## Max.cor.Y.cv.0.rpart                                                                                                                      Murder, Income
@@ -4354,19 +4487,23 @@ print(plt_models_df)
 ## All.X.bayesglm            HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, .rnorm, Population, x, Illiteracy, Murder
 ## All.X.no.rnorm.rpart              HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder
 ## All.X.no.rnorm.rf                 HS.Grad, y, Frost, state.region.fctr, Income, Area, state.area, state.division.fctr, Population, x, Illiteracy, Murder
+## Csm.1.lm                                                                                    Population, Income, Illiteracy, Murder, HS.Grad, Frost, Area
+## Csm.2.lm                                                                                                              Population, Murder, HS.Grad, Frost
 ##                           max.nTuningRuns max.R.sq.fit max.R.sq.OOB
-## MFO.lm                                  0   0.03526376   -0.1638247
-## Max.cor.Y.cv.0.rpart                    0   0.00000000    0.0000000
-## Max.cor.Y.cv.0.cp.0.rpart               0   0.66474630    0.4764582
-## Max.cor.Y.rpart                         3   0.00000000    0.0000000
-## Max.cor.Y.lm                            1   0.70582695    0.4919670
-## Interact.High.cor.Y.lm                  1   0.71871361    0.4920480
-## Low.cor.X.lm                            1   0.89680550   -0.4350738
-## All.X.lm                                1   0.90517649   -0.4939665
-## All.X.glm                               1   0.90517649   -0.4939665
-## All.X.bayesglm                          1   0.90511753   -0.4851210
-## All.X.no.rnorm.rpart                    3   0.00000000    0.0000000
-## All.X.no.rnorm.rf                       3   0.86486236    0.3724496
+## MFO.lm                                  0   0.03526376  -0.16382466
+## Max.cor.Y.cv.0.rpart                    0   0.00000000   0.00000000
+## Max.cor.Y.cv.0.cp.0.rpart               0   0.66474630   0.47645818
+## Max.cor.Y.rpart                         3   0.00000000   0.00000000
+## Max.cor.Y.lm                            1   0.70582695   0.49196697
+## Interact.High.cor.Y.lm                  1   0.71871361   0.49204804
+## Low.cor.X.lm                            1   0.89680550  -0.43507375
+## All.X.lm                                1   0.90517649  -0.49396649
+## All.X.glm                               1   0.90517649  -0.49396649
+## All.X.bayesglm                          1   0.90511753  -0.48512097
+## All.X.no.rnorm.rpart                    3   0.00000000   0.00000000
+## All.X.no.rnorm.rf                       3   0.86486236   0.37244959
+## Csm.1.lm                                1   0.79579730   0.09058028
+## Csm.2.lm                                1   0.76808360   0.61862592
 ##                           max.Adj.R.sq.fit max.Rsquared.fit
 ## MFO.lm                         0.006029329               NA
 ## Max.cor.Y.cv.0.rpart                    NA               NA
@@ -4379,20 +4516,24 @@ print(plt_models_df)
 ## All.X.glm                               NA        0.3370194
 ## All.X.bayesglm                          NA        0.3637272
 ## All.X.no.rnorm.rpart                    NA        0.3011671
-## All.X.no.rnorm.rf                       NA        0.6995869
+## All.X.no.rnorm.rf                       NA        0.6989583
+## Csm.1.lm                       0.742855858        0.5047781
+## Csm.2.lm                       0.737161419        0.6383817
 ##                           inv.elapsedtime.everything inv.elapsedtime.final
-## MFO.lm                                     1.5455951             333.33333
-## Max.cor.Y.cv.0.rpart                       1.8382353             125.00000
-## Max.cor.Y.cv.0.cp.0.rpart                  2.3094688             166.66667
-## Max.cor.Y.rpart                            1.0989011             100.00000
-## Max.cor.Y.lm                               0.9746589             500.00000
-## Interact.High.cor.Y.lm                     1.2300123             333.33333
-## Low.cor.X.lm                               1.2315271             200.00000
-## All.X.lm                                   1.1933174             142.85714
-## All.X.glm                                  1.1834320              71.42857
-## All.X.bayesglm                             0.4535147              24.39024
-## All.X.no.rnorm.rpart                       1.1173184              71.42857
-## All.X.no.rnorm.rf                          0.9487666              43.47826
+## MFO.lm                                     1.5408320             333.33333
+## Max.cor.Y.cv.0.rpart                       1.8214936             142.85714
+## Max.cor.Y.cv.0.cp.0.rpart                  2.2883295             166.66667
+## Max.cor.Y.rpart                            1.0822511             142.85714
+## Max.cor.Y.lm                               0.9775171             500.00000
+## Interact.High.cor.Y.lm                     1.2422360             333.33333
+## Low.cor.X.lm                               1.1547344             166.66667
+## All.X.lm                                   1.1890606             100.00000
+## All.X.glm                                  1.1560694              71.42857
+## All.X.bayesglm                             0.5060729              19.60784
+## All.X.no.rnorm.rpart                       1.0857763              76.92308
+## All.X.no.rnorm.rf                          0.5611672              41.66667
+## Csm.1.lm                                   1.1834320             250.00000
+## Csm.2.lm                                   1.2376238             333.33333
 ##                           inv.RMSE.fit inv.RMSE.OOB inv.aic.fit
 ## MFO.lm                       0.7848312    0.6610587          NA
 ## Max.cor.Y.cv.0.rpart         0.7708689    0.7131548          NA
@@ -4405,7 +4546,9 @@ print(plt_models_df)
 ## All.X.glm                    0.5449382    0.5834630  0.01297161
 ## All.X.bayesglm               0.5976699    0.5851873  0.01203178
 ## All.X.no.rnorm.rpart         0.8652818    0.7131548          NA
-## All.X.no.rnorm.rf            1.2742960    0.9006516          NA
+## All.X.no.rnorm.rf            1.2693492    0.9006516          NA
+## Csm.1.lm                     0.9343374    0.7478278          NA
+## Csm.2.lm                     1.1787319    1.1548038          NA
 ```
 
 ```r
@@ -4420,7 +4563,7 @@ print(myplot_radar(radar_inp_df=plt_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 12. Consider specifying shapes manually. if you must have them.
+## 14. Consider specifying shapes manually. if you must have them.
 ```
 
 ```
@@ -4429,12 +4572,12 @@ print(myplot_radar(radar_inp_df=plt_models_df))
 ```
 
 ```
-## Warning in loop_apply(n, do.ply): Removed 68 rows containing missing values
+## Warning in loop_apply(n, do.ply): Removed 88 rows containing missing values
 ## (geom_point).
 ```
 
 ```
-## Warning in loop_apply(n, do.ply): Removed 20 rows containing missing values
+## Warning in loop_apply(n, do.ply): Removed 22 rows containing missing values
 ## (geom_text).
 ```
 
@@ -4446,7 +4589,7 @@ print(myplot_radar(radar_inp_df=plt_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 12. Consider specifying shapes manually. if you must have them.
+## 14. Consider specifying shapes manually. if you must have them.
 ```
 
 ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_2-1.png) 
@@ -4605,18 +4748,20 @@ print(dsp_models_df <- orderBy(model_sel_frmla, glb_models_df)[, dsp_models_cols
 
 ```
 ##                     model_id min.RMSE.OOB max.R.sq.OOB max.Adj.R.sq.fit
-## 6     Interact.High.cor.Y.lm    0.9993728    0.4920480      0.681208758
-## 5               Max.cor.Y.lm    0.9994526    0.4919670      0.687441138
-## 3  Max.cor.Y.cv.0.cp.0.rpart    1.0145931    0.4764582               NA
-## 12         All.X.no.rnorm.rf    1.1103073    0.3724496               NA
-## 2       Max.cor.Y.cv.0.rpart    1.4022202    0.0000000               NA
-## 4            Max.cor.Y.rpart    1.4022202    0.0000000               NA
-## 11      All.X.no.rnorm.rpart    1.4022202    0.0000000               NA
-## 1                     MFO.lm    1.5127250   -0.1638247      0.006029329
-## 7               Low.cor.X.lm    1.6797836   -0.4350738      0.815336155
-## 10            All.X.bayesglm    1.7088547   -0.4851210               NA
-## 8                   All.X.lm    1.7139046   -0.4939665      0.785066700
-## 9                  All.X.glm    1.7139046   -0.4939665               NA
+## 14                  Csm.2.lm    0.8659480   0.61862592      0.737161419
+## 6     Interact.High.cor.Y.lm    0.9993728   0.49204804      0.681208758
+## 5               Max.cor.Y.lm    0.9994526   0.49196697      0.687441138
+## 3  Max.cor.Y.cv.0.cp.0.rpart    1.0145931   0.47645818               NA
+## 12         All.X.no.rnorm.rf    1.1103073   0.37244959               NA
+## 13                  Csm.1.lm    1.3372063   0.09058028      0.742855858
+## 2       Max.cor.Y.cv.0.rpart    1.4022202   0.00000000               NA
+## 4            Max.cor.Y.rpart    1.4022202   0.00000000               NA
+## 11      All.X.no.rnorm.rpart    1.4022202   0.00000000               NA
+## 1                     MFO.lm    1.5127250  -0.16382466      0.006029329
+## 7               Low.cor.X.lm    1.6797836  -0.43507375      0.815336155
+## 10            All.X.bayesglm    1.7088547  -0.48512097               NA
+## 8                   All.X.lm    1.7139046  -0.49396649      0.785066700
+## 9                  All.X.glm    1.7139046  -0.49396649               NA
 ```
 
 ```r
@@ -4631,16 +4776,16 @@ print(myplot_radar(radar_inp_df=dsp_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 12. Consider specifying shapes manually. if you must have them.
+## 14. Consider specifying shapes manually. if you must have them.
 ```
 
 ```
-## Warning in loop_apply(n, do.ply): Removed 6 rows containing missing values
+## Warning in loop_apply(n, do.ply): Removed 4 rows containing missing values
 ## (geom_path).
 ```
 
 ```
-## Warning in loop_apply(n, do.ply): Removed 25 rows containing missing values
+## Warning in loop_apply(n, do.ply): Removed 33 rows containing missing values
 ## (geom_point).
 ```
 
@@ -4657,7 +4802,7 @@ print(myplot_radar(radar_inp_df=dsp_models_df))
 ```
 ## Warning: The shape palette can deal with a maximum of 6 discrete values
 ## because more than 6 becomes difficult to discriminate; you have
-## 12. Consider specifying shapes manually. if you must have them.
+## 14. Consider specifying shapes manually. if you must have them.
 ```
 
 ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_2-3.png) 
@@ -4679,7 +4824,7 @@ print(sprintf("Best model id: %s", dsp_models_df[1, "model_id"]))
 ```
 
 ```
-## [1] "Best model id: Interact.High.cor.Y.lm"
+## [1] "Best model id: Csm.2.lm"
 ```
 
 ```r
@@ -4704,21 +4849,21 @@ myprint_mdl(glb_sel_mdl <- glb_models_lst[[glb_sel_mdl_id]])
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -1.5001 -0.3157 -0.0616  0.5171  1.2410 
+## -1.4481 -0.4838  0.1375  0.4930  0.8952 
 ## 
 ## Coefficients:
-##                       Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)         71.4520821  1.4857446  48.092   <2e-16 ***
-## Murder              -0.4576543  0.1985981  -2.304   0.0283 *  
-## Income               0.0002815  0.0003403   0.827   0.4147    
-## `Murder:Illiteracy`  0.0170160  0.0373674   0.455   0.6521    
-## `Murder:HS.Grad`     0.0037262  0.0032615   1.142   0.2623    
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  6.977e+01  1.139e+00  61.245  < 2e-16 ***
+## Population   5.537e-05  3.712e-05   1.492  0.14619    
+## Murder      -2.501e-01  4.308e-02  -5.806  2.4e-06 ***
+## HS.Grad      5.710e-02  1.818e-02   3.140  0.00378 ** 
+## Frost       -2.704e-03  2.988e-03  -0.905  0.37282    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.7431 on 30 degrees of freedom
-## Multiple R-squared:  0.7187,	Adjusted R-squared:  0.6812 
-## F-statistic: 19.16 on 4 and 30 DF,  p-value: 6.433e-08
+## Residual standard error: 0.6748 on 30 degrees of freedom
+## Multiple R-squared:  0.7681,	Adjusted R-squared:  0.7372 
+## F-statistic: 24.84 on 4 and 30 DF,  p-value: 3.781e-09
 ```
 
 ```
@@ -4778,39 +4923,32 @@ glb_OOBobs_df <- glb_get_predictions(df=glb_OOBobs_df, mdl_id=glb_sel_mdl_id,
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
+## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
 ## 2         365   6315        1.5    69.31   11.3    66.7   152 566432
 ## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
+## 34        637   5087        0.8    72.78    1.4    50.3   186  69273
 ## 26        746   4347        0.6    70.56    5.0    59.2   155 145587
-## 50        376   4566        0.6    70.29    6.9    62.9   173  97203
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 2         AK     589757 -127.2500 49.2500            Pacific     Alaska
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 4         AR      53104  -92.2992 34.7336 West South Central   Arkansas
-## 26        MT     147138 -109.3200 46.8230           Mountain    Montana
-## 50        WY      97914 -107.2560 43.0504           Mountain    Wyoming
-##    state.region .src     .rnorm state.division.fctr state.region.fctr
-## 11         West Test -0.3059627             Pacific              West
-## 2          West Test -1.1381369             Pacific              West
-## 8         South Test  0.6886403      South Atlantic             South
-## 4         South Test  0.4264642  West South Central             South
-## 26         West Test  1.3686023            Mountain              West
-## 50         West Test -1.2207177            Mountain              West
-##    Life.Exp.predict.Interact.High.cor.Y.lm
-## 11                                71.64203
-## 2                                 71.15494
-## 8                                 71.32454
-## 4                                 69.60872
-## 26                                71.54135
-## 50                                71.26709
-##    Life.Exp.predict.Interact.High.cor.Y.lm.err
-## 11                                   1.9579705
-## 2                                    1.8449408
-## 8                                    1.2645365
-## 4                                    1.0512759
-## 26                                   0.9813451
-## 50                                   0.9770943
+##    state.abb state.area         x       y     state.division   state.name
+## 11        HI       6450 -126.2500 31.7500            Pacific       Hawaii
+## 4         AR      53104  -92.2992 34.7336 West South Central     Arkansas
+## 2         AK     589757 -127.2500 49.2500            Pacific       Alaska
+## 8         DE       2057  -74.9841 38.6777     South Atlantic     Delaware
+## 34        ND      70665 -100.0990 47.2517 West North Central North Dakota
+## 26        MT     147138 -109.3200 46.8230           Mountain      Montana
+##     state.region .src     .rnorm state.division.fctr state.region.fctr
+## 11          West Test -0.3059627             Pacific              West
+## 4          South Test  0.4264642  West South Central             South
+## 2           West Test -1.1381369             Pacific              West
+## 8          South Test  0.6886403      South Atlantic             South
+## 34 North Central Test  1.5164706  West North Central     North Central
+## 26          West Test  1.3686023            Mountain              West
+##    Life.Exp.predict.Csm.2.lm Life.Exp.predict.Csm.2.lm.err
+## 11                  71.79852                     1.8014793
+## 4                   69.45995                     1.2000501
+## 2                   70.35815                     1.0481505
+## 8                   71.08724                     1.0272417
+## 34                  71.82113                     0.9588669
+## 26                  71.51869                     0.9586932
 ```
 
 ```r
@@ -4827,11 +4965,11 @@ print(glb_featsimp_df)
 ```
 
 ```
-##                     importance Interact.High.cor.Y.lm.importance
-## Murder               100.00000                         100.00000
-## `Murder:HS.Grad`      37.15934                          37.15934
-## Income                20.10340                          20.10340
-## `Murder:Illiteracy`    0.00000                           0.00000
+##            importance Csm.2.lm.importance
+## Murder      100.00000           100.00000
+## HS.Grad      45.60984            45.60984
+## Population   11.97951            11.97951
+## Frost         0.00000             0.00000
 ```
 
 ```r
@@ -4909,40 +5047,34 @@ if (glb_is_classification && glb_is_binomial)
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
+## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
 ## 2         365   6315        1.5    69.31   11.3    66.7   152 566432
 ## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
-## 26        746   4347        0.6    70.56    5.0    59.2   155 145587
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 2         AK     589757 -127.2500 49.2500            Pacific     Alaska
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 4         AR      53104  -92.2992 34.7336 West South Central   Arkansas
-## 26        MT     147138 -109.3200 46.8230           Mountain    Montana
-##    state.region .src     .rnorm state.division.fctr state.region.fctr
-## 11         West Test -0.3059627             Pacific              West
-## 2          West Test -1.1381369             Pacific              West
-## 8         South Test  0.6886403      South Atlantic             South
-## 4         South Test  0.4264642  West South Central             South
-## 26         West Test  1.3686023            Mountain              West
-##    Life.Exp.predict.Interact.High.cor.Y.lm
-## 11                                71.64203
-## 2                                 71.15494
-## 8                                 71.32454
-## 4                                 69.60872
-## 26                                71.54135
-##    Life.Exp.predict.Interact.High.cor.Y.lm.err
-## 11                                   1.9579705
-## 2                                    1.8449408
-## 8                                    1.2645365
-## 4                                    1.0512759
-## 26                                   0.9813451
-##    Life.Exp.predict.Interact.High.cor.Y.lm.accurate .label
-## 11                                            FALSE     HI
-## 2                                             FALSE     AK
-## 8                                             FALSE     DE
-## 4                                             FALSE     AR
-## 26                                            FALSE     MT
+## 34        637   5087        0.8    72.78    1.4    50.3   186  69273
+##    state.abb state.area         x       y     state.division   state.name
+## 11        HI       6450 -126.2500 31.7500            Pacific       Hawaii
+## 4         AR      53104  -92.2992 34.7336 West South Central     Arkansas
+## 2         AK     589757 -127.2500 49.2500            Pacific       Alaska
+## 8         DE       2057  -74.9841 38.6777     South Atlantic     Delaware
+## 34        ND      70665 -100.0990 47.2517 West North Central North Dakota
+##     state.region .src     .rnorm state.division.fctr state.region.fctr
+## 11          West Test -0.3059627             Pacific              West
+## 4          South Test  0.4264642  West South Central             South
+## 2           West Test -1.1381369             Pacific              West
+## 8          South Test  0.6886403      South Atlantic             South
+## 34 North Central Test  1.5164706  West North Central     North Central
+##    Life.Exp.predict.Csm.2.lm Life.Exp.predict.Csm.2.lm.err
+## 11                  71.79852                     1.8014793
+## 4                   69.45995                     1.2000501
+## 2                   70.35815                     1.0481505
+## 8                   71.08724                     1.0272417
+## 34                  71.82113                     0.9588669
+##    Life.Exp.predict.Csm.2.lm.accurate .label
+## 11                              FALSE     HI
+## 4                               FALSE     AR
+## 2                               FALSE     AK
+## 8                               FALSE     DE
+## 34                              FALSE     ND
 ```
 
 ![](USCensus1977_State_HW2_v2_files/figure-html/fit.models_2-13.png) 
@@ -4991,8 +5123,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "fit.models", major.inc=FALSE)
 
 ```
 ##         label step_major step_minor    bgn    end elapsed
-## 12 fit.models          7          2 44.986 53.977   8.991
-## 13 fit.models          7          3 53.978     NA      NA
+## 12 fit.models          7          2 52.051 62.656  10.606
+## 13 fit.models          7          3 62.657     NA      NA
 ```
 
 
@@ -5017,9 +5149,9 @@ print(setdiff(names(glb_OOBobs_df), names(glb_allobs_df)))
 ```
 
 ```
-## [1] "Life.Exp.predict.Interact.High.cor.Y.lm"         
-## [2] "Life.Exp.predict.Interact.High.cor.Y.lm.err"     
-## [3] "Life.Exp.predict.Interact.High.cor.Y.lm.accurate"
+## [1] "Life.Exp.predict.Csm.2.lm"         
+## [2] "Life.Exp.predict.Csm.2.lm.err"     
+## [3] "Life.Exp.predict.Csm.2.lm.accurate"
 ```
 
 ```r
@@ -5073,9 +5205,9 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "fit.data.training", major.inc=TRUE)
 ```
 
 ```
-##                label step_major step_minor    bgn    end elapsed
-## 13        fit.models          7          3 53.978 57.547   3.569
-## 14 fit.data.training          8          0 57.547     NA      NA
+##                label step_major step_minor    bgn  end elapsed
+## 13        fit.models          7          3 62.657 66.2   3.543
+## 14 fit.data.training          8          0 66.201   NA      NA
 ```
 
 ## Step `8.0: fit data training`
@@ -5159,7 +5291,7 @@ if (!is.null(glb_fin_mdl_id) && (glb_fin_mdl_id %in% names(glb_models_lst))) {
 
 ```
 ## [1] "fitting model: Final.lm"
-## [1] "    indep_vars: Murder, Income, Murder:Illiteracy, Murder:HS.Grad, Murder:Murder"
+## [1] "    indep_vars: Population, Murder, HS.Grad, Frost"
 ## Aggregating results
 ## Fitting final model on full training set
 ```
@@ -5173,33 +5305,31 @@ if (!is.null(glb_fin_mdl_id) && (glb_fin_mdl_id %in% names(glb_models_lst))) {
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -1.5001 -0.3157 -0.0616  0.5171  1.2410 
+## -1.4481 -0.4838  0.1375  0.4930  0.8952 
 ## 
 ## Coefficients:
-##                       Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)         71.4520821  1.4857446  48.092   <2e-16 ***
-## Murder              -0.4576543  0.1985981  -2.304   0.0283 *  
-## Income               0.0002815  0.0003403   0.827   0.4147    
-## `Murder:Illiteracy`  0.0170160  0.0373674   0.455   0.6521    
-## `Murder:HS.Grad`     0.0037262  0.0032615   1.142   0.2623    
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  6.977e+01  1.139e+00  61.245  < 2e-16 ***
+## Population   5.537e-05  3.712e-05   1.492  0.14619    
+## Murder      -2.501e-01  4.308e-02  -5.806  2.4e-06 ***
+## HS.Grad      5.710e-02  1.818e-02   3.140  0.00378 ** 
+## Frost       -2.704e-03  2.988e-03  -0.905  0.37282    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.7431 on 30 degrees of freedom
-## Multiple R-squared:  0.7187,	Adjusted R-squared:  0.6812 
-## F-statistic: 19.16 on 4 and 30 DF,  p-value: 6.433e-08
+## Residual standard error: 0.6748 on 30 degrees of freedom
+## Multiple R-squared:  0.7681,	Adjusted R-squared:  0.7372 
+## F-statistic: 24.84 on 4 and 30 DF,  p-value: 3.781e-09
 ## 
 ## [1] "    calling mypredict_mdl for fit:"
-##   model_id model_method
-## 1 Final.lm           lm
-##                                                              feats
-## 1 Murder, Income, Murder:Illiteracy, Murder:HS.Grad, Murder:Murder
-##   max.nTuningRuns min.elapsedtime.everything min.elapsedtime.final
-## 1               1                      0.835                 0.003
-##   max.R.sq.fit min.RMSE.fit max.Adj.R.sq.fit max.Rsquared.fit
-## 1    0.7187136    0.8694013        0.6812088         0.644158
-##   min.RMSESD.fit max.RsquaredSD.fit
-## 1      0.1370642          0.1714077
+##   model_id model_method                              feats max.nTuningRuns
+## 1 Final.lm           lm Population, Murder, HS.Grad, Frost               1
+##   min.elapsedtime.everything min.elapsedtime.final max.R.sq.fit
+## 1                      0.854                 0.003    0.7680836
+##   min.RMSE.fit max.Adj.R.sq.fit max.Rsquared.fit min.RMSESD.fit
+## 1    0.8483694        0.7371614        0.6383817      0.1624027
+##   max.RsquaredSD.fit
+## 1         0.04550407
 ```
 
 ```r
@@ -5209,8 +5339,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "fit.data.training", major.inc=FALSE
 
 ```
 ##                label step_major step_minor    bgn    end elapsed
-## 14 fit.data.training          8          0 57.547 61.324   3.777
-## 15 fit.data.training          8          1 61.325     NA      NA
+## 14 fit.data.training          8          0 66.201 69.795   3.595
+## 15 fit.data.training          8          1 69.796     NA      NA
 ```
 
 
@@ -5225,40 +5355,40 @@ glb_trnobs_df <- glb_get_predictions(df=glb_trnobs_df, mdl_id=glb_fin_mdl_id,
 
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
-## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 19       1058   3694        0.7    70.39    2.7    54.7   161  30920
+## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 40       2816   3635        2.3    67.96   11.6    37.8    65  30225
+## 38      11860   4449        1.0    70.43    6.1    50.2   126  44966
 ## 43      12237   4188        2.2    70.90   12.2    47.4    35 262134
-## 44       1203   4022        0.6    72.90    4.5    67.3   137  82096
-## 48       1799   3617        1.4    69.48    6.7    41.6   100  24070
+## 17       3387   3712        1.6    70.10   10.6    38.5    95  39650
 ##    state.abb state.area         x       y     state.division
-## 28        NV     110540 -116.8510 39.1063           Mountain
 ## 19        ME      33215  -68.9801 45.6226        New England
+## 28        NV     110540 -116.8510 39.1063           Mountain
 ## 40        SC      31055  -80.5056 33.6190     South Atlantic
+## 38        PA      45333  -77.4500 40.9069    Middle Atlantic
 ## 43        TX     267339  -98.7857 31.3897 West South Central
-## 44        UT      84916 -111.3300 39.1063           Mountain
-## 48        WV      24181  -80.6665 38.4204     South Atlantic
+## 17        KY      40395  -84.7674 37.3915 East South Central
 ##        state.name state.region  .src      .rnorm state.division.fctr
-## 28         Nevada         West Train  0.37963948            Mountain
 ## 19          Maine    Northeast Train  0.77996512         New England
+## 28         Nevada         West Train  0.37963948            Mountain
 ## 40 South Carolina        South Train  0.05300423      South Atlantic
+## 38   Pennsylvania    Northeast Train  0.30352864     Middle Atlantic
 ## 43          Texas        South Train -0.49103117  West South Central
-## 44           Utah         West Train -2.30916888            Mountain
-## 48  West Virginia        South Train -0.28477301      South Atlantic
+## 17       Kentucky        South Train  1.20796200  East South Central
 ##    state.region.fctr Life.Exp.predict.Final.lm
-## 28              West                  70.53007
-## 19         Northeast                  71.83863
-## 40             South                  69.25427
-## 43             South                  69.65898
-## 44              West                  71.69912
-## 48             South                  70.60204
+## 19         Northeast                  71.83810
+## 28              West                  70.13761
+## 40             South                  69.00395
+## 38         Northeast                  71.42348
+## 43             South                  70.00476
+## 17             South                  69.24455
 ##    Life.Exp.predict.Final.lm.err
-## 28                      1.500072
-## 19                      1.448632
-## 40                      1.294272
-## 43                      1.241024
-## 44                      1.200884
-## 48                      1.122036
+## 19                     1.4480981
+## 28                     1.1076092
+## 40                     1.0439531
+## 38                     0.9934843
+## 43                     0.8952381
+## 17                     0.8554471
 ```
 
 ```r
@@ -5272,16 +5402,11 @@ print(glb_featsimp_df)
 ```
 
 ```
-##                     Interact.High.cor.Y.lm.importance importance
-## Murder                                      100.00000  100.00000
-## `Murder:HS.Grad`                             37.15934   37.15934
-## Income                                       20.10340   20.10340
-## `Murder:Illiteracy`                           0.00000    0.00000
-##                     Final.lm.importance
-## Murder                        100.00000
-## `Murder:HS.Grad`               37.15934
-## Income                         20.10340
-## `Murder:Illiteracy`             0.00000
+##            Csm.2.lm.importance importance Final.lm.importance
+## Murder               100.00000  100.00000           100.00000
+## HS.Grad               45.60984   45.60984            45.60984
+## Population            11.97951   11.97951            11.97951
+## Frost                  0.00000    0.00000             0.00000
 ```
 
 ```r
@@ -5296,35 +5421,35 @@ if (glb_is_classification && glb_is_binomial)
 
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
-## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 19       1058   3694        0.7    70.39    2.7    54.7   161  30920
+## 28        590   5149        0.5    69.03   11.5    65.2   188 109889
 ## 40       2816   3635        2.3    67.96   11.6    37.8    65  30225
+## 38      11860   4449        1.0    70.43    6.1    50.2   126  44966
 ## 43      12237   4188        2.2    70.90   12.2    47.4    35 262134
-## 44       1203   4022        0.6    72.90    4.5    67.3   137  82096
 ##    state.abb state.area         x       y     state.division
-## 28        NV     110540 -116.8510 39.1063           Mountain
 ## 19        ME      33215  -68.9801 45.6226        New England
+## 28        NV     110540 -116.8510 39.1063           Mountain
 ## 40        SC      31055  -80.5056 33.6190     South Atlantic
+## 38        PA      45333  -77.4500 40.9069    Middle Atlantic
 ## 43        TX     267339  -98.7857 31.3897 West South Central
-## 44        UT      84916 -111.3300 39.1063           Mountain
 ##        state.name state.region  .src      .rnorm state.division.fctr
-## 28         Nevada         West Train  0.37963948            Mountain
 ## 19          Maine    Northeast Train  0.77996512         New England
+## 28         Nevada         West Train  0.37963948            Mountain
 ## 40 South Carolina        South Train  0.05300423      South Atlantic
+## 38   Pennsylvania    Northeast Train  0.30352864     Middle Atlantic
 ## 43          Texas        South Train -0.49103117  West South Central
-## 44           Utah         West Train -2.30916888            Mountain
 ##    state.region.fctr Life.Exp.predict.Final.lm
-## 28              West                  70.53007
-## 19         Northeast                  71.83863
-## 40             South                  69.25427
-## 43             South                  69.65898
-## 44              West                  71.69912
+## 19         Northeast                  71.83810
+## 28              West                  70.13761
+## 40             South                  69.00395
+## 38         Northeast                  71.42348
+## 43             South                  70.00476
 ##    Life.Exp.predict.Final.lm.err .label
-## 28                      1.500072     NV
-## 19                      1.448632     ME
-## 40                      1.294272     SC
-## 43                      1.241024     TX
-## 44                      1.200884     UT
+## 19                     1.4480981     ME
+## 28                     1.1076092     NV
+## 40                     1.0439531     SC
+## 38                     0.9934843     PA
+## 43                     0.8952381     TX
 ```
 
 ![](USCensus1977_State_HW2_v2_files/figure-html/fit.data.training_1-6.png) 
@@ -5413,8 +5538,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "predict.data.new", major.inc=TRUE)
 
 ```
 ##                label step_major step_minor    bgn    end elapsed
-## 15 fit.data.training          8          1 61.325 64.665    3.34
-## 16  predict.data.new          9          0 64.665     NA      NA
+## 15 fit.data.training          8          1 69.796 73.264   3.468
+## 16  predict.data.new          9          0 73.264     NA      NA
 ```
 
 ## Step `9.0: predict data new`
@@ -5434,32 +5559,32 @@ glb_newobs_df <- glb_get_predictions(glb_newobs_df, mdl_id=glb_fin_mdl_id,
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
+## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
 ## 2         365   6315        1.5    69.31   11.3    66.7   152 566432
 ## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
+## 34        637   5087        0.8    72.78    1.4    50.3   186  69273
 ## 26        746   4347        0.6    70.56    5.0    59.2   155 145587
-## 50        376   4566        0.6    70.29    6.9    62.9   173  97203
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 2         AK     589757 -127.2500 49.2500            Pacific     Alaska
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 4         AR      53104  -92.2992 34.7336 West South Central   Arkansas
-## 26        MT     147138 -109.3200 46.8230           Mountain    Montana
-## 50        WY      97914 -107.2560 43.0504           Mountain    Wyoming
-##    state.region .src     .rnorm state.division.fctr state.region.fctr
-## 11         West Test -0.3059627             Pacific              West
-## 2          West Test -1.1381369             Pacific              West
-## 8         South Test  0.6886403      South Atlantic             South
-## 4         South Test  0.4264642  West South Central             South
-## 26         West Test  1.3686023            Mountain              West
-## 50         West Test -1.2207177            Mountain              West
+##    state.abb state.area         x       y     state.division   state.name
+## 11        HI       6450 -126.2500 31.7500            Pacific       Hawaii
+## 4         AR      53104  -92.2992 34.7336 West South Central     Arkansas
+## 2         AK     589757 -127.2500 49.2500            Pacific       Alaska
+## 8         DE       2057  -74.9841 38.6777     South Atlantic     Delaware
+## 34        ND      70665 -100.0990 47.2517 West North Central North Dakota
+## 26        MT     147138 -109.3200 46.8230           Mountain      Montana
+##     state.region .src     .rnorm state.division.fctr state.region.fctr
+## 11          West Test -0.3059627             Pacific              West
+## 4          South Test  0.4264642  West South Central             South
+## 2           West Test -1.1381369             Pacific              West
+## 8          South Test  0.6886403      South Atlantic             South
+## 34 North Central Test  1.5164706  West North Central     North Central
+## 26          West Test  1.3686023            Mountain              West
 ##    Life.Exp.predict.Final.lm Life.Exp.predict.Final.lm.err
-## 11                  71.64203                     1.9579705
-## 2                   71.15494                     1.8449408
-## 8                   71.32454                     1.2645365
-## 4                   69.60872                     1.0512759
-## 26                  71.54135                     0.9813451
-## 50                  71.26709                     0.9770943
+## 11                  71.79852                     1.8014793
+## 4                   69.45995                     1.2000501
+## 2                   70.35815                     1.0481505
+## 8                   71.08724                     1.0272417
+## 34                  71.82113                     0.9588669
+## 26                  71.51869                     0.9586932
 ```
 
 ```r
@@ -5475,28 +5600,28 @@ if (glb_is_classification && glb_is_binomial)
 ```
 ##    Population Income Illiteracy Life.Exp Murder HS.Grad Frost   Area
 ## 11        868   4963        1.9    73.60    6.2    61.9     0   6425
+## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
 ## 2         365   6315        1.5    69.31   11.3    66.7   152 566432
 ## 8         579   4809        0.9    70.06    6.2    54.6   103   1982
-## 4        2110   3378        1.9    70.66   10.1    39.9    65  51945
-## 26        746   4347        0.6    70.56    5.0    59.2   155 145587
-##    state.abb state.area         x       y     state.division state.name
-## 11        HI       6450 -126.2500 31.7500            Pacific     Hawaii
-## 2         AK     589757 -127.2500 49.2500            Pacific     Alaska
-## 8         DE       2057  -74.9841 38.6777     South Atlantic   Delaware
-## 4         AR      53104  -92.2992 34.7336 West South Central   Arkansas
-## 26        MT     147138 -109.3200 46.8230           Mountain    Montana
-##    state.region .src     .rnorm state.division.fctr state.region.fctr
-## 11         West Test -0.3059627             Pacific              West
-## 2          West Test -1.1381369             Pacific              West
-## 8         South Test  0.6886403      South Atlantic             South
-## 4         South Test  0.4264642  West South Central             South
-## 26         West Test  1.3686023            Mountain              West
+## 34        637   5087        0.8    72.78    1.4    50.3   186  69273
+##    state.abb state.area         x       y     state.division   state.name
+## 11        HI       6450 -126.2500 31.7500            Pacific       Hawaii
+## 4         AR      53104  -92.2992 34.7336 West South Central     Arkansas
+## 2         AK     589757 -127.2500 49.2500            Pacific       Alaska
+## 8         DE       2057  -74.9841 38.6777     South Atlantic     Delaware
+## 34        ND      70665 -100.0990 47.2517 West North Central North Dakota
+##     state.region .src     .rnorm state.division.fctr state.region.fctr
+## 11          West Test -0.3059627             Pacific              West
+## 4          South Test  0.4264642  West South Central             South
+## 2           West Test -1.1381369             Pacific              West
+## 8          South Test  0.6886403      South Atlantic             South
+## 34 North Central Test  1.5164706  West North Central     North Central
 ##    Life.Exp.predict.Final.lm Life.Exp.predict.Final.lm.err .label
-## 11                  71.64203                     1.9579705     HI
-## 2                   71.15494                     1.8449408     AK
-## 8                   71.32454                     1.2645365     DE
-## 4                   69.60872                     1.0512759     AR
-## 26                  71.54135                     0.9813451     MT
+## 11                  71.79852                     1.8014793     HI
+## 4                   69.45995                     1.2000501     AR
+## 2                   70.35815                     1.0481505     AK
+## 8                   71.08724                     1.0272417     DE
+## 34                  71.82113                     0.9588669     ND
 ```
 
 ![](USCensus1977_State_HW2_v2_files/figure-html/predict.data.new-6.png) 
@@ -5528,7 +5653,7 @@ print(sprintf("glb_sel_mdl_id: %s", glb_sel_mdl_id))
 ```
 
 ```
-## [1] "glb_sel_mdl_id: Interact.High.cor.Y.lm"
+## [1] "glb_sel_mdl_id: Csm.2.lm"
 ```
 
 ```r
@@ -5553,18 +5678,20 @@ print(dsp_models_df)
 
 ```
 ##                     model_id min.RMSE.OOB max.R.sq.OOB max.Adj.R.sq.fit
-## 6     Interact.High.cor.Y.lm    0.9993728    0.4920480      0.681208758
-## 5               Max.cor.Y.lm    0.9994526    0.4919670      0.687441138
-## 3  Max.cor.Y.cv.0.cp.0.rpart    1.0145931    0.4764582               NA
-## 12         All.X.no.rnorm.rf    1.1103073    0.3724496               NA
-## 2       Max.cor.Y.cv.0.rpart    1.4022202    0.0000000               NA
-## 4            Max.cor.Y.rpart    1.4022202    0.0000000               NA
-## 11      All.X.no.rnorm.rpart    1.4022202    0.0000000               NA
-## 1                     MFO.lm    1.5127250   -0.1638247      0.006029329
-## 7               Low.cor.X.lm    1.6797836   -0.4350738      0.815336155
-## 10            All.X.bayesglm    1.7088547   -0.4851210               NA
-## 8                   All.X.lm    1.7139046   -0.4939665      0.785066700
-## 9                  All.X.glm    1.7139046   -0.4939665               NA
+## 14                  Csm.2.lm    0.8659480   0.61862592      0.737161419
+## 6     Interact.High.cor.Y.lm    0.9993728   0.49204804      0.681208758
+## 5               Max.cor.Y.lm    0.9994526   0.49196697      0.687441138
+## 3  Max.cor.Y.cv.0.cp.0.rpart    1.0145931   0.47645818               NA
+## 12         All.X.no.rnorm.rf    1.1103073   0.37244959               NA
+## 13                  Csm.1.lm    1.3372063   0.09058028      0.742855858
+## 2       Max.cor.Y.cv.0.rpart    1.4022202   0.00000000               NA
+## 4            Max.cor.Y.rpart    1.4022202   0.00000000               NA
+## 11      All.X.no.rnorm.rpart    1.4022202   0.00000000               NA
+## 1                     MFO.lm    1.5127250  -0.16382466      0.006029329
+## 7               Low.cor.X.lm    1.6797836  -0.43507375      0.815336155
+## 10            All.X.bayesglm    1.7088547  -0.48512097               NA
+## 8                   All.X.lm    1.7139046  -0.49396649      0.785066700
+## 9                  All.X.glm    1.7139046  -0.49396649               NA
 ```
 
 ```r
@@ -5606,10 +5733,10 @@ if (glb_is_regression) {
 ```
 
 ```
-## [1] "Interact.High.cor.Y.lm OOB RMSE: 0.9994"
+## [1] "Csm.2.lm OOB RMSE: 0.8659"
 ## [1] "Final.lm prediction stats for glb_newobs_df:"
 ##   model_id max.R.sq.new min.RMSE.new
-## 1 Final.lm     0.492048    0.9993728
+## 1 Final.lm    0.6186259     0.865948
 ```
 
 ```r
@@ -5734,16 +5861,11 @@ print(orderBy(as.formula(paste0("~ -", glb_sel_mdl_id, ".importance")), glb_feat
 ```
 
 ```
-##                     Interact.High.cor.Y.lm.importance importance
-## Murder                                      100.00000  100.00000
-## `Murder:HS.Grad`                             37.15934   37.15934
-## Income                                       20.10340   20.10340
-## `Murder:Illiteracy`                           0.00000    0.00000
-##                     Final.lm.importance
-## Murder                        100.00000
-## `Murder:HS.Grad`               37.15934
-## Income                         20.10340
-## `Murder:Illiteracy`             0.00000
+##            Csm.2.lm.importance importance Final.lm.importance
+## Murder               100.00000  100.00000           100.00000
+## HS.Grad               45.60984   45.60984            45.60984
+## Population            11.97951   11.97951            11.97951
+## Frost                  0.00000    0.00000             0.00000
 ```
 
 ```r
@@ -5798,8 +5920,8 @@ glb_chunks_df <- myadd_chunk(glb_chunks_df, "display.session.info", major.inc=TR
 
 ```
 ##                   label step_major step_minor    bgn    end elapsed
-## 16     predict.data.new          9          0 64.665 67.775    3.11
-## 17 display.session.info         10          0 67.775     NA      NA
+## 16     predict.data.new          9          0 73.264 76.327   3.064
+## 17 display.session.info         10          0 76.328     NA      NA
 ```
 
 Null Hypothesis ($\sf{H_{0}}$): mpg is not impacted by am_fctr.  
@@ -5814,40 +5936,40 @@ We reject the null hypothesis i.e. we have evidence to conclude that am_fctr imp
 
 ```
 ##                      label step_major step_minor    bgn    end elapsed
-## 11              fit.models          7          1 30.427 44.985  14.559
-## 10              fit.models          7          0 17.225 30.427  13.202
-## 12              fit.models          7          2 44.986 53.977   8.991
-## 2             inspect.data          2          0  8.622 13.225   4.603
-## 14       fit.data.training          8          0 57.547 61.324   3.777
-## 13              fit.models          7          3 53.978 57.547   3.569
-## 15       fit.data.training          8          1 61.325 64.665   3.340
-## 16        predict.data.new          9          0 64.665 67.775   3.110
-## 3               scrub.data          2          1 13.226 14.630   1.404
-## 5         extract.features          3          0 14.684 15.879   1.195
-## 8          select.features          5          0 16.271 16.885   0.614
-## 1              import.data          1          0  8.136  8.621   0.485
-## 9  partition.data.training          6          0 16.885 17.224   0.339
-## 6             cluster.data          4          0 15.879 16.212   0.333
-## 7      manage.missing.data          4          1 16.212 16.271   0.059
-## 4           transform.data          2          2 14.631 14.684   0.053
+## 11              fit.models          7          1 31.075 52.050  20.975
+## 10              fit.models          7          0 17.653 31.074  13.422
+## 12              fit.models          7          2 52.051 62.656  10.606
+## 2             inspect.data          2          0  9.366 13.968   4.602
+## 14       fit.data.training          8          0 66.201 69.795   3.595
+## 13              fit.models          7          3 62.657 66.200   3.543
+## 15       fit.data.training          8          1 69.796 73.264   3.468
+## 16        predict.data.new          9          0 73.264 76.327   3.064
+## 3               scrub.data          2          1 13.968 15.244   1.276
+## 5         extract.features          3          0 15.300 16.438   1.139
+## 8          select.features          5          0 16.763 17.353   0.590
+## 1              import.data          1          0  8.926  9.365   0.440
+## 9  partition.data.training          6          0 17.354 17.652   0.299
+## 6             cluster.data          4          0 16.439 16.707   0.268
+## 4           transform.data          2          2 15.244 15.300   0.056
+## 7      manage.missing.data          4          1 16.707 16.762   0.055
 ##    duration
-## 11   14.558
-## 10   13.202
-## 12    8.991
-## 2     4.603
-## 14    3.777
-## 13    3.569
-## 15    3.340
-## 16    3.110
-## 3     1.404
-## 5     1.195
-## 8     0.614
-## 1     0.485
-## 9     0.339
-## 6     0.333
-## 7     0.059
-## 4     0.053
-## [1] "Total Elapsed Time: 67.775 secs"
+## 11   20.975
+## 10   13.421
+## 12   10.605
+## 2     4.602
+## 14    3.594
+## 13    3.543
+## 15    3.468
+## 16    3.063
+## 3     1.276
+## 5     1.138
+## 8     0.590
+## 1     0.439
+## 9     0.298
+## 6     0.268
+## 4     0.056
+## 7     0.055
+## [1] "Total Elapsed Time: 76.327 secs"
 ```
 
 ![](USCensus1977_State_HW2_v2_files/figure-html/display.session.info-1.png) 
